@@ -1,0 +1,52 @@
+---
+- name: cassandra init.d script
+  template:
+    src: "{{ cassandra_version }}/init_cassandra_Debian.j2"
+    dest: /etc/init.d/cassandra
+    mode: '0755'
+  when: init_d is defined
+
+- debug:
+    var: ansible_distribution_major_version
+
+- name: ensure required OS libs are installed
+  apt:
+    name:
+      - libjemalloc1
+      - cpufrequtils
+    state: present
+  when:
+    - (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == "18") or (ansible_distribution == 'Debian' and ansible_distribution_major_version == "3")
+
+- name: ensure required OS libs are installed (Ubuntu 20)
+  apt:
+    name:
+      - libjemalloc2
+      - cpufrequtils
+      - python2
+    state: present
+  when:
+    - ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == "20"
+
+- name: ensure required OS libs are installed (Ubuntu 22)
+  apt:
+    name:
+      - libjemalloc2
+      - cpufrequtils
+    state: present
+  when:
+    - ansible_distribution == 'Ubuntu' and ansible_distribution_major_version == "22"
+
+- name: Set GOVERNOR
+  lineinfile:
+    path: /etc/init.d/cpufrequtils
+    regexp: '^GOVERNOR='
+    line: 'GOVERNOR="performance"'
+
+- name: Configure rc.local
+  template:
+    src: debian_rclocal.sh.j2
+    dest: /etc/rc.local
+    owner: root
+    group: root
+    mode: 0755

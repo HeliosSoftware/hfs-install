@@ -1,0 +1,48 @@
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+{% if cassandra_local_ssd_devices is defined and cassandra_local_ssd_devices != "" %}
+# Optimisations for locally-attached SSD disks
+for device in {{ cassandra_local_ssd_devices }}
+do
+  echo deadline > /sys/block/${device}/queue/scheduler
+  echo 0 > /sys/class/block/${device}/queue/rotational
+  echo 8 > /sys/class/block/${device}/queue/read_ahead_kb
+done
+{% endif %}
+
+{% if cassandra_remote_ssd_devices is defined and cassandra_remote_ssd_devices != "" %}
+# Optimisations for network-attached SSD disks (e.g. Google PD-SSD)
+for device in {{ cassandra_remote_ssd_devices }}
+do
+  echo noop > /sys/block/${device}/queue/scheduler
+  echo 0 > /sys/class/block/${device}/queue/rotational
+  echo 8 > /sys/class/block/${device}/queue/read_ahead_kb
+done
+{% endif %}
+
+echo 0 > /proc/sys/vm/zone_reclaim_mode
+
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+
+{% if system_clocksource is defined and system_clocksource != "" %}
+echo {{ system_clocksource }} > /sys/devices/system/clocksource/clocksource0/current_clocksource
+{% endif %}
+
+{% if disabled_cpus is defined and disabled_cpus != "" %}
+for cpu_id in {{ disabled_cpus }}
+do
+  echo 0 > /sys/devices/system/cpu/cpu${cpu_id}/online
+done
+{% endif %}
+
+exit 0

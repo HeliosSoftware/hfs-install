@@ -1,0 +1,58 @@
+---
+- debug: msg="os-config.yml"
+- include: os-config.yml
+
+
+- debug: msg="cassandra.yml"
+- include: cassandra.yml
+
+
+- debug: msg="Debian.yml"
+  when: ansible_os_family == "Debian"
+- include: Debian.yml
+  when: ansible_os_family == "Debian"
+
+
+- debug: msg="RedHat.yml"
+  when: ansible_os_family == "RedHat"
+- include: RedHat.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Install systemd file
+  template:
+    src: "{{ cassandra_version }}/cassandra.service.j2"
+    dest: /etc/systemd/system/cassandra.service
+    mode: 0644
+  when: cassandra_version is match("^4\.0.*") or cassandra_version is match("^3\.*")
+
+- name: Install systemd file
+  template:
+    src: "4.1.x/cassandra.service.j2"
+    dest: /etc/systemd/system/cassandra.service
+    mode: 0644
+  when: cassandra_version is match("^4\.1.*")
+
+- name: Set Cassandra service to NOT auto start
+  service:
+    name: cassandra
+    enabled: false
+  when: "not (cassandra_autostart | default('false') )"
+
+- name: Set Cassandra service to auto start
+  service:
+    name: cassandra
+    enabled: true
+  when: " cassandra_autostart | default('false')"
+
+- name: Create user config directory
+  file:
+    path: "~/.cassandra"
+    state: directory
+    mode: 0700
+
+- name: config user
+  template:
+    src: "{{ item }}.j2"
+    dest: "~/.cassandra/{{ item }}"
+  with_items:
+    - cqlshrc

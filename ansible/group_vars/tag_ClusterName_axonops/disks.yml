@@ -1,0 +1,23 @@
+lvm_owner: cassandra
+lvm_group: cassandra
+lvm_mode: 0775
+lvm_setup:
+  use_lvm: true
+  pv_devices:
+    - "/dev/nvme1n1"
+  vg_name: "vg_cassandra"
+  lv_list:
+    cassandra_logs:
+      lv_name: logs
+      path: "/var/log/cassandra"
+      size: "5G"
+      fs_type: "xfs"
+      fs_opt: "noatime,nodiratime"
+      permissions: 775
+    cassandra_data:
+      lv_name: data
+      path: "/data"
+      size: "+100%FREE"
+      fs_type: "xfs"
+      fs_opt: "noatime,nodiratime"
+      permissions: 750

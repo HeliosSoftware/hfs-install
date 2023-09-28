@@ -1,0 +1,13 @@
+---
+- name: create the lvm top directories
+  file:
+    path: "{{ item.value.path }}"
+    owner: "{{ lvm_owner }}"
+    group: "{{ lvm_group }}"
+    state: directory
+    # mode: "{{ lvm_mode }}" - this causes problems
+  with_dict: "{{ lvm_setup.lv_list }}"
+
+- name: setup the lvm mounts for the top level directories
+  include: setup_lvm_disk.yml
+  when: lvm_setup.use_lvm

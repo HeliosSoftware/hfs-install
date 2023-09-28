@@ -1,0 +1,5 @@
+---
+
+ntp_prefered_server: 169.254.169.123
+
+chrony_extra_options: "minpoll 4 maxpoll 4"

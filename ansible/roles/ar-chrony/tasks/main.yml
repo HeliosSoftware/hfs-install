@@ -1,0 +1,8 @@
+---
+
+- debug: msg="OS Family {{ ansible_os_family }}"
+
+- include: Debian.yml
+  when: ansible_os_family == "Debian"
+- include: RedHat.yml
+  when: ansible_os_family == "RedHat"

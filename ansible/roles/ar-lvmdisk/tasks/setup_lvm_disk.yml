@@ -1,0 +1,42 @@
+---
+- name: Create the volume group using the provided physical volumes
+  lvg:
+    vg: "{{ lvm_setup.vg_name }}"
+    pvs: "{{ lvm_setup.pv_devices | join(',') }}"
+
+- name: Run pvresize (workaround waiting for the fix coming with ansible 2.9.10)
+  command: "/sbin/pvresize {{ item }}"
+  with_items: "{{ lvm_setup.pv_devices }}"
+
+- name: Create the logical volumes
+  lvol:
+    vg: "{{ lvm_setup.vg_name }}"
+    lv: "{{ lvm_setup.lv_list[item.key].lv_name }}"
+    size: "{{ lvm_setup.lv_list[item.key].size }}"
+    resizefs: yes
+  with_dict: "{{ lvm_setup.lv_list }}"
+
+- name: Create the filesystems on the logical volumes
+  filesystem:
+    fstype: "{{ lvm_setup.lv_list[item.key].fs_type }}"
+    dev: "/dev/{{ lvm_setup.vg_name }}/{{ lvm_setup.lv_list[item.key].lv_name }}"
+    opts: "{{ lvm_setup.lv_list[item.key].mkfs_opts|default('') }}"
+  with_dict: "{{ lvm_setup.lv_list }}"
+
+- name: Mount the logical volumes
+  mount:
+    path: "{{ lvm_setup.lv_list[item.key].path }}"
+    src: "/dev/{{ lvm_setup.vg_name }}/{{ lvm_setup.lv_list[item.key].lv_name }}"
+    fstype: "{{ lvm_setup.lv_list[item.key].fs_type }}"
+    opts: "{{ lvm_setup.lv_list[item.key].fs_opt }}"
+    state: "mounted"
+  with_dict: "{{ lvm_setup.lv_list }}"
+
+- name: Change the ownership for the volumes
+  file:
+    path: "{{ item.value.path }}"
+    owner: "{{ item.value.owner | default(lvm_owner) }}"
+    group: "{{ item.value.group | default(lvm_group) }}"
+    state: directory
+    mode: "{{ item.value.permissions | default ('0700') }}"
+  with_dict: "{{ lvm_setup.lv_list }}"

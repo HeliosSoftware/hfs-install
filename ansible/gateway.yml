@@ -1,0 +1,26 @@
+---
+- name: Deploy Gateway
+  hosts: localhost
+  gather_facts: true
+  become: true
+  any_errors_fatal: true
+
+
+  tasks:
+    - name: Create Iptables NAT chain
+      iptables:
+        table: nat
+        chain: POSTROUTING
+        out_interface: 'ens5'
+        source: '10.0.0.0/8'
+        destination: '0.0.0.0/0'
+        jump: MASQUERADE
+        protocol: 'all'
+        comment: Ansible NAT Masquerade
+
+    - name: Enable IPv4 forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        state: present
+        reload: True

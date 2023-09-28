@@ -1,0 +1,31 @@
+---
+- set_fact:
+    chrony_etc_root: /etc/chrony
+
+- name: Install chrony
+  apt:
+    name: "chrony"
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: Ensure chrony installed
+  apt:
+    pkg: chrony
+    state: present
+
+- name: Copy over config
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "{{ chrony_etc_root }}/{{ item }}"
+  with_items:
+    - chrony.conf
+  tags:
+    - config
+  notify:
+    - restart chrony
+
+- name: Ensure chrony daemon is started
+  service:
+    name: chrony
+    enabled: yes
+    state: started

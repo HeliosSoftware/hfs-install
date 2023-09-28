@@ -1,0 +1,144 @@
+---
+- name: Deploy Cassandra
+  hosts: "{% if target_name is defined %}tag_Name_{{target_name |replace('-', '_')}}{% elif target_ip is defined %}{{target_ip}}{% else %}all{% endif %}"
+  gather_facts: true
+  become: true
+  any_errors_fatal: true
+
+  pre_tasks:
+    - name: EC2 Tags
+      tags: always
+      ec2_tags:
+      register: ec2_tags
+
+    - name: get instance id
+      tags: always
+      uri:
+        url: http://169.254.169.254/latest/meta-data/instance-id
+        timeout: 3
+        return_content: true
+      register: _instance_id
+      failed_when: False
+
+    - name: get instance AZ
+      tags: always
+      uri:
+        url: http://169.254.169.254/latest/meta-data/placement/availability-zone
+        timeout: 3
+        return_content: true
+      register: _az
+      failed_when: False
+
+    - name: Save instance ID
+      tags: always
+      set_fact:
+        instance_id: "{{ _instance_id.content }}"
+
+    - name: Set facts from EC2 tags
+      tags: always
+      set_fact:
+        cassandra_dc: "{{ ec2_tags['tags']['DC'] }}"
+        cassandra_seeds: "{{ ec2_tags['tags']['Seeds'] | default('') }}"
+        cassandra_cluster_name: "{{ ec2_tags['tags']['ClusterName'] }}"
+        env: "{{ ec2_tags['tags']['Environment'] }}"
+        cassandra_rack: "{{ _az.content }}"
+
+    - name: Verify Tags
+      assert:
+        that:
+          - cassandra_dc != ""
+
+    - name: Create groups
+      group:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - axonops
+        - cassandra
+
+    - name: Set user groups
+      user:
+        name: "{{ item }}"
+        groups: [axonops, cassandra]
+        append: true
+        state: present
+      with_items:
+        - axonops
+        - cassandra
+
+    - name: create the lvm top directories
+      file:
+        path: "/data"
+        owner: "cassandra"
+        group: "cassandra"
+        state: directory
+    # This is done in `common`
+    # - name: Add IP address of all hosts to all hosts
+    #   lineinfile:
+    #     dest: /etc/hosts
+    #     regexp: ".*\t{{ hostvars[item]['tags']['FQDN'] }}"
+    #     line: "{{ hostvars[item]['private_ip_address'] }}\t{{ hostvars[item]['tags']['Name'] }}\t{{ hostvars[item]['tags']['FQDN'] }}"
+    #     state: present
+    #   with_items: "{{ groups.all }}"
+    #   tags: etc_hosts
+
+
+    - name: Install dirmngr (required by ar-zulu-jdk)
+      apt:
+        name: dirmngr
+        state: present
+
+
+  # TODO: Install ntpd
+  roles:
+    - role: ar-lvmdisk
+      tags: lvm
+      when: lvm_setup.use_lvm is defined and lvm_setup.use_lvm
+    - {name: ar-chrony, tags: chrony}
+    - {name: ar-zulu-jdk, tags: jdk}
+    - {name: ar-zulu-jdk, tags: jdk}
+    - {name: ar-apache-cassandra-tarball, tags: cassandra}
+    - {name: ar-axon-agent, tags: axon-agent}
+
+  post_tasks:
+    - name: Symlinks logs
+      block:
+        - name: Check if symlink
+          stat:
+            path: /opt/cassandra/logs
+          register: _c_logs
+        - name: Remove if directory
+          file:
+            state: absent
+            path: /opt/cassandra/logs
+          when: _c_logs.stat.exists and _c_logs.stat.isdir
+        - name: Symlink
+          file:
+            state: link
+            src: /var/log/cassandra
+            dest: /opt/cassandra/logs
+
+    - name: Hold Java package versions
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      with_items:
+        - ar-openjdk
+
+    - name: Ensure keystore directory exists
+      file:
+        path: "{{ cassandra_keystore_dir }}"
+        state: directory
+        owner: cassandra
+        group: cassandra
+        mode: 0700
+      tags: cassandra
+
+
+    - name: Data directory permissions (hack)
+      file:
+        path: /data
+        mode: 0750
+        owner: cassandra
+        group: cassandra
+      tags: cassandra,data

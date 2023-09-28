@@ -1,0 +1,19 @@
+{% if not cassandra_cqlsh_hide_auth %}
+[authentication]
+username = {{ cassandra_cql_user | default('cassandra') }}
+password = {{ cassandra_cql_password | default('cassandra') }}
+{% endif %}
+
+[connection]
+hostname = {{ cassandra_cql_host | default(ansible_hostname) }}
+port = {{ cassandra_cqlsh_port }}
+{% if cassandra_ssl_client_encryption_enabled is defined and cassandra_ssl_client_encryption_enabled %}
+ssl = true
+
+[ssl]
+validate = true
+version = SSLv23
+certfile = ~/.cassandra/ca.crt
+userkey = ~/.cassandra/cqlsh.key
+usercert = ~/.cassandra/cqlsh.crt
+{% endif %}

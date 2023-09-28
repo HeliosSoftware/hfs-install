@@ -1,0 +1,27 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    # - name: run nodetool status
+    #   command: 'nodetool status'
+    #   register: server_reply
+
+    # - name: Assert that the server anwered
+    #   assert:
+    #     that:
+    #       - 'server_reply.stdout'
+
+    # - debug:
+    #     var: server_reply
+
+    # - name: run cqlsh -e 'DESCRIBE KEYSPACES'
+    #   command: 'cqlsh -e "DESCRIBE KEYSPACES"'
+    #   register: server_reply
+
+    # - name: Assert that the server anwered
+    #   assert:
+    #     that:
+    #       - 'server_reply.stdout'
+
+    # - debug:
+    #     var: server_reply

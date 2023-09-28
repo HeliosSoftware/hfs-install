@@ -1,0 +1,15 @@
+graphite:
+  -
+    period: {{ digitalisio_agent_graphite_period }}
+    timeunit: 'SECONDS'
+    prefix: 'cassandra-clustername-node1'
+    hosts:
+    - host: '127.0.0.1'
+      port: 2003
+    predicate:
+      color: "white"
+      useQualifiedName: true
+      patterns:
+        - "^org.+"
+        - "^jvm.+"
+        - "^java.lang.+"

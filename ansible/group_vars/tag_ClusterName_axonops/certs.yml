@@ -1,0 +1,3 @@
+cassandra_use_vault: false
+
+cassandra_certs_dir: "~/keystore/idm_australia"

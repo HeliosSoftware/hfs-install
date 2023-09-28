@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: Digitalis.IO DevOps
+  description: Digitalis Role for chrony
+  company: Digitalis.IO
+  license: Apache Licese 2.0
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: RedHat
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+
+  galaxy_tags:
+    - chrony
+
+dependencies: []

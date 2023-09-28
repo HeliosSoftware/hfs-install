@@ -1,0 +1,19 @@
+---
+lvm_setup: {}
+lvm_owner: root
+lvm_group: root
+lvm_mode: 0700
+
+# Example
+# lvm_setup:
+#   use_lvm: yes
+#   pv_devices:
+#     - "/dev/sdb"
+#   vg_name: "vg_backup"
+#   lv_list:
+#     backup_area:
+#       lv_name: pg_backup_lv
+#       path: "/pg_backup"
+#       size: "+100%FREE"
+#       fs_type: "ext4"
+#       fs_opt: "noatime,nodiratime"

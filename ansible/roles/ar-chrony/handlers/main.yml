@@ -1,0 +1,6 @@
+---
+- name: restart chrony
+  service:
+    name: chrony
+    state: restarted
+  when: docker is not defined

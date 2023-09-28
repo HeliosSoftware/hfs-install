@@ -1,0 +1,11 @@
+---
+
+- include: install.yml
+  when:
+    - install is defined
+    - install
+
+- include: configure.yml
+  when:
+    - configure is defined
+    - configure

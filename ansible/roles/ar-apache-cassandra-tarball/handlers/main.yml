@@ -1,0 +1,7 @@
+---
+- name: reload system limits
+  shell: sysctl --system
+
+
+- name: disable swap runtime
+  shell: swapoff --all

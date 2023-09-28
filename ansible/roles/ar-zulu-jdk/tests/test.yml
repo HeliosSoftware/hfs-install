@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  become: yes
+  connection: local
+  roles:
+    - ansible-role-zulu_jdk

@@ -1,0 +1,71 @@
+---
+- name: Deploy Cassandra
+  hosts: "tag_ClusterName_{{ cluster_name }},&tag_Role_cassandra"
+  gather_facts: true
+  become: true
+  any_errors_fatal: true
+  tasks:
+    - name: Ensure /root/.cassandra exists
+      file:
+        state: directory
+        path: /root/.cassandra
+        owner: root
+        group: root
+
+    - name: Configure temporary cqlshrc username
+      run_once: true
+      block:
+        - name: Copy cqlshrc
+          copy:
+            src: "/root/.cassandra/cqlshrc"
+            dest: "/root/.cassandra/cqlshrc.init"
+            remote_src: true
+
+        - name: Set up temp user
+          lineinfile:
+            path: "/root/.cassandra/cqlshrc.init"
+            regex: "^username "
+            line: "username = cassandra"
+
+        - name: Configure temporary cqlshrc password
+          lineinfile:
+            path: "/root/.cassandra/cqlshrc.init"
+            regex: "^password "
+            line: "password = cassandra"
+
+    # Deploy schema...
+    # - set_fact:
+    #     all_files:
+    #       - users.cql
+
+    # - name: Copy over schema templates
+    #   run_once: true
+    #   template:
+    #     src: "templates/cassandra-schema/{{ item }}.j2"
+    #     dest: "/tmp/{{ item }}"
+    #   with_items: "{{ all_files }}"
+
+    # - name: Configure users
+    #   run_once: true
+    #   shell: |-
+    #     #!/bin/bash
+    #     /opt/cassandra/bin/cqlsh --cqlshrc=/root/.cassandra/cqlshrc.init -f /tmp/users.cql
+
+    - name: Clean up temporary files
+      run_once: true
+      file:
+        path: "/tmp/{{ item }}"
+        state: absent
+      with_items: "{{ all_files }}"
+
+    - name: Clean up temporary cqlshrc
+      run_once: true
+      file:
+        path: "/root/.cassandra/cqlshrc.init"
+        state: absent
+
+    - name: Drop cassandra user
+      run_once: true
+      shell: |-
+        #!/bin/bash
+        /opt/cassandra/bin/cqlsh -e 'DROP ROLE IF EXISTS cassandra'

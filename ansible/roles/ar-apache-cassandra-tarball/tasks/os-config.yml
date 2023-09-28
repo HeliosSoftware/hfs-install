@@ -1,0 +1,37 @@
+---
+# https://github.com/apache/cassandra/blob/18bcda2d4c2eba7370a0b21f33eed37cb730bbb3/bin/cassandra#L90-L100
+- name: Install numactl
+  package:
+    name: numactl
+    state: latest
+
+- name: Minimal VM swappiness
+  lineinfile: dest=/etc/sysctl.conf  regexp="^vm.swappiness = 1"  state=present  line="vm.swappiness = 1"
+
+
+- name: setup OS overcommit config
+  template: src=overcommit.conf.j2  dest=/etc/sysctl.d/overcommit.conf
+  notify: reload system limits
+
+
+- name: OS Limits
+  copy: src=limits.conf  dest=/etc/security/limits.conf  owner=root  group=root  mode=0644
+  notify: reload system limits
+
+
+- name: setup irqbalance
+  template: src=irqbalance.j2  dest=/etc/default/irqbalance
+  notify: reload system limits
+
+
+- name: Cassandra User Limits
+  copy: src=cassandra_limits.conf  dest=/etc/security/limits.d/cassandra.conf  owner=root  group=root  mode=0644
+  notify: reload system limits
+
+
+- name: remove swaps
+  lineinfile: dest=/etc/fstab  regexp='\s+swap\s+'  state=absent
+  notify: disable swap runtime
+
+- name: Reload sysctl
+  shell: sysctl --system

@@ -1,0 +1,7 @@
+---
+ntp_prefered_server: pool.ntp.org
+ntp_servers: []
+ntp_pool_hosts: []
+ntp_allowed_clients: []
+
+chrony_extra_options:

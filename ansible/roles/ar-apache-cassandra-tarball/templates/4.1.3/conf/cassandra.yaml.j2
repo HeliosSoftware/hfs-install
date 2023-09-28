@@ -1,0 +1,242 @@
+cluster_name: '{{ cassandra_cluster_name }}'
+num_tokens: {{ cassandra_num_tokens }}
+{% if cassandra_allocate_tokens_for_keyspace is defined %}
+allocate_tokens_for_keyspace: {{ cassandra_allocate_tokens_for_keyspace }}
+{% endif %}
+{% if cassandra_initial_token is defined %}
+initial_token: {{ cassandra_initial_token }}
+{% endif %}
+hinted_handoff_enabled: {{ cassandra_hinted_handoff_enabled }}
+max_hint_window: {{ cassandra_max_hint_window | default(3) }}h
+hinted_handoff_throttle: {{ cassandra_hinted_handoff_throttle_in_kb }}KiB
+max_hints_delivery_threads: {{ cassandra_max_hints_delivery_threads }}
+hints_flush_period: {{ cassandra_hints_flush_period_in_ms }}ms
+max_hints_file_size: {{ cassandra_max_hints_file_size_in_mb }}MiB
+auto_hints_cleanup_enabled: {{ cassandra_auto_hints_cleanup_enabled | default(false) }}
+hint_window_persistent_enabled: {{ cassandra_hint_window_persistent_enabled | default(true) }}
+batchlog_replay_throttle: {{ cassandra_batchlog_replay_throttle_in_kb }}KiB
+network_authorizer: {{ cassandra_network_authorizer | default("AllowAllNetworkAuthorizer") }}
+authenticator: {{ cassandra_authenticator }}
+authorizer: {{ cassandra_authorizer }}
+role_manager: {{ cassandra_role_manager }}
+roles_validity: {{ cassandra_roles_validity_in_ms }}ms
+roles_update_interval: {{ cassandra_roles_update_interval_in_ms }}ms
+permissions_validity: {{ cassandra_permissions_validity_in_ms }}ms
+permissions_update_interval: {{ cassandra_permissions_update_interval_in_ms }}ms
+credentials_validity: {{ cassandra_credentials_validity | default(2000) }}ms
+credentials_update_interval: {{ cassandra_credentials_update_interval_in_ms }}ms
+credentials_cache_active_update: {{ cassandra_credentials_cache_active_update | default(false) }}
+partitioner: {{ cassandra_partitioner }}
+data_file_directories:
+  - {{ cassandra_data_directory }}
+commitlog_directory: {{ cassandra_commitlog_directory }}
+{% if cassandra_hints_directory is defined %}
+hints_directory: {{ cassandra_hints_directory }}
+{% endif %}
+{% if cassandra_local_system_data_file_directory is defined and cassandra_local_system_data_file_directory %}
+local_system_data_file_directory: {{ cassandra_local_system_data_file_directory }}
+{% endif %}
+{% if cassandra_cdc_raw_directory is defined and cassandra_cdc_raw_directory %}
+cdc_raw_directory: {{ cassandra_cdc_raw_directory }}
+{% endif %}
+cdc_enabled: {{ cassandra_cdc_enabled }}
+disk_failure_policy: {{ cassandra_disk_failure_policy }}
+commit_failure_policy: {{ cassandra_commit_failure_policy }}
+prepared_statements_cache_size: {{ cassandra_prepared_statements_cache_size_mb }}MiB
+key_cache_size: {{ cassandra_key_cache_size_in_mb }}MiB
+key_cache_save_period: {{ cassandra_key_cache_save_period }}s
+{% if cassandra_key_cache_keys_to_save is defined %}
+key_cache_keys_to_save: {{ cassandra_key_cache_keys_to_save }}
+{% endif %}
+row_cache_size: {{ cassandra_row_cache_size_in_mb }}MiB
+row_cache_save_period: {{ cassandra_row_cache_save_period }}s
+counter_cache_size: {{ cassandra_counter_cache_size_in_mb }}MiB
+counter_cache_save_period: {{ cassandra_counter_cache_save_period }}s
+commitlog_sync: {{ cassandra_commitlog_sync }}
+commitlog_sync_period: {{ cassandra_commitlog_sync_period_in_ms }}ms
+commitlog_segment_size: {{ cassandra_commitlog_segment_size_in_mb }}MiB
+seed_provider:
+  # Addresses of hosts that are deemed contact points.
+  # Cassandra nodes use this list of hosts to find each other and learn
+  # the topology of the ring.  You must change this if you are running
+  # multiple nodes!
+  - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+    parameters:
+      # seeds is actually a comma-delimited list of addresses.
+      # Ex: "<ip1>,<ip2>,<ip3>"
+{% if cassandra_seeds is defined %}
+          - seeds: "{{ cassandra_seeds }}"
+{% else %}
+          - seeds: "127.0.0.1"
+{% endif %}
+concurrent_reads: {{ cassandra_concurrent_reads }}
+concurrent_writes: {{ cassandra_concurrent_writes }}
+concurrent_counter_writes: {{ cassandra_concurrent_counter_writes }}
+concurrent_materialized_view_writes: {{ cassandra_concurrent_materialized_view_writes }}
+{% if cassandra_file_cache_size_in_mb is defined %}
+file_cache_size: {{ cassandra_file_cache_size_in_mb }}MiB
+{% endif %}
+{% if cassandra_buffer_pool_use_heap_if_exhausted is defined %}
+# buffer_pool_use_heap_if_exhausted: {{ cassandra_buffer_pool_use_heap_if_exhausted }}
+{% endif %}
+disk_optimization_strategy: {{ cassandra_disk_optimization_strategy }}
+{% if cassandra_memtable_heap_space_in_mb is defined %}
+memtable_heap_space: {{ cassandra_memtable_heap_space_in_mb }}MiB
+{% endif %}
+{% if cassandra_memtable_offheap_space_in_mb is defined %}
+memtable_offheap_space: {{ cassandra_memtable_offheap_space_in_mb }}MiB
+{% endif %}
+{% if cassandra_memtable_cleanup_threshold is defined %}
+memtable_cleanup_threshold: {{ cassandra_memtable_cleanup_threshold }}
+{% endif %}
+memtable_allocation_type: {{ cassandra_memtable_allocation_type }}
+commitlog_total_space: {{ cassandra_commitlog_total_space_in_mb }}MiB
+{% if cassandra_memtable_flush_writers is defined %}
+memtable_flush_writers: {{ cassandra_memtable_flush_writers }}
+{% endif %}
+{% if cassandra_index_summary_capacity_in_mb is defined %}
+index_summary_capacity: {{ cassandra_index_summary_capacity_in_mb }}MiB
+{% else %}
+index_summary_capacity:
+{% endif %}
+index_summary_resize_interval: {{ cassandra_index_summary_resize_interval_in_minutes }}m
+trickle_fsync: {{ cassandra_trickle_fsync }}
+trickle_fsync_interval: {{ cassandra_trickle_fsync_interval_in_kb }}KiB
+storage_port: {{ cassandra_storage_port }}
+ssl_storage_port: {{ cassandra_ssl_storage_port }}
+{% if cassandra_listen_address is defined %}
+listen_address: {{ cassandra_listen_address }}
+{% elif cassandra_listen_interface is defined %}
+listen_interface: {{cassandra_listen_interface}}
+{% else %}
+listen_address: localhost
+{% endif %}
+{% if cassandra_memtable_broadcast_address is defined %}
+broadcast_address: {{ cassandra_broadcast_address }}
+{% endif %}
+{% if cassandra_listen_on_broadcast_address is defined %}
+listen_on_broadcast_address: {{ cassandra_listen_on_broadcast_address | default(false) }}
+{% endif %}
+internode_authenticator: {{ cassandra_internode_authenticator }}
+start_native_transport: {{ cassandra_start_native_transport }}
+native_transport_port: {{ cassandra_native_transport_port }}
+{% if cassandra_native_transport_max_frame_size_in_mb is defined %}
+native_transport_max_frame_size: {{ cassandra_native_transport_max_frame_size_in_mb }}MiB
+{% endif %}
+{% if cassandra_native_transport_max_concurrent_connections is defined %}
+native_transport_max_concurrent_connections: {{ cassandra_native_transport_max_concurrent_connections }}
+{% endif %}
+native_transport_allow_older_protocols: true
+{% if cassandra_rpc_address is defined %}
+rpc_address: {{ cassandra_rpc_address }}
+{% elif cassandra_rpc_interface is defined %}
+rpc_interface: {{cassandra_rpc_interface}}
+{% else %}
+rpc_address: localhost
+{% endif %}
+{% if cassandra_broadcast_rpc_address is defined %}
+broadcast_rpc_address: {{ cassandra_broadcast_rpc_address }}
+{% endif %}
+rpc_keepalive: {{ cassandra_rpc_keepalive }}
+incremental_backups: {{ cassandra_incremental_backups }}
+snapshot_before_compaction: {{ cassandra_snapshot_before_compaction }}
+auto_snapshot: {{ cassandra_auto_snapshot }}
+snapshot_links_per_second: {{ cassandra_snapshot_links_per_second | default(0) }}
+column_index_size: {{ cassandra_column_index_size_in_kb }}KiB
+column_index_cache_size: {{ cassandra_column_index_cache_size_in_kb }}KiB
+concurrent_materialized_view_builders: 1
+compaction_throughput: {{ cassandra_compaction_throughput_mb_per_sec }}MiB/s
+sstable_preemptive_open_interval: {{ cassandra_sstable_preemptive_open_interval_in_mb }}MiB
+uuid_sstable_identifiers_enabled: false
+read_request_timeout: {{ cassandra_read_request_timeout_in_ms }}ms
+range_request_timeout: {{ cassandra_range_request_timeout_in_ms }}ms
+write_request_timeout: {{ cassandra_write_request_timeout_in_ms }}ms
+counter_write_request_timeout: {{ cassandra_counter_write_request_timeout_in_ms }}ms
+cas_contention_timeout: {{ cassandra_cas_contention_timeout_in_ms }}ms
+truncate_request_timeout: {{ cassandra_truncate_request_timeout_in_ms }}ms
+request_timeout: {{ cassandra_request_timeout_in_ms }}ms
+slow_query_log_timeout: {{ cassandra_slow_query_log_timeout_in_ms }}ms
+streaming_keep_alive_period: {{ cassandra_streaming_keep_alive_period_in_secs }}s
+phi_convict_threshold: {{ cassandra_phi_convict_threshold }}
+endpoint_snitch: {{ cassandra_endpoint_snitch }}
+dynamic_snitch_update_interval: {{ cassandra_dynamic_snitch_update_interval_in_ms }}ms
+dynamic_snitch_reset_interval: {{ cassandra_dynamic_snitch_reset_interval_in_ms }}ms
+dynamic_snitch_badness_threshold: {{ cassandra_dynamic_snitch_badness_threshold }}
+server_encryption_options:
+    internode_encryption: {{ cassandra_ssl_internode_encryption | default("none") }}
+    legacy_ssl_storage_port_enabled: {{ cassandra_enable_legacy_ssl_storage_port | default(false) }}
+    keystore: {{ cassandra_ssl_internode_keystore_file | default("") }}
+    keystore_password: {{ cassandra_ssl_internode_keystore_pass | default("") }}
+    truststore: {{ cassandra_ssl_truststore_file | default("") }}
+    truststore_password: {{ cassandra_ssl_truststore_pass | default("") }}
+    require_endpoint_verification: {{ cassandra_require_endpoint_verification }}
+    protocol: {{ cassandra_ssl_internode_protocol }}
+    store_type: JKS
+{% if cassandra_cipher_suites_server_encryption is defined %}
+    cipher_suites:
+    {{ cassandra_cipher_suites_server_encryption | to_nice_yaml(indent=4) | trim | indent(4) }}
+{% endif %}
+    require_client_auth: {{ cassandra_ssl_internode_require_client_auth }}
+client_encryption_options:
+    enabled: {{ cassandra_ssl_client_encryption_enabled | default("false") }}
+    optional: {{ cassandra_ssl_client_encryption_optional }}
+    keystore: {{ cassandra_ssl_client_keystore_file | default("") }}
+    keystore_password: {{ cassandra_ssl_client_keystore_pass | default("") }}
+    require_client_auth: {{ cassandra_ssl_client_require_client_auth | default("false") }}
+    truststore: {{ cassandra_ssl_truststore_file | default("") }}
+    truststore_password: {{ cassandra_ssl_truststore_pass | default("") }}
+    protocol: {{ cassandra_ssl_client_encryption_protocol }}
+    store_type: JKS
+{% if cassandra_cipher_suites_client_encryption is defined %}
+    cipher_suites:
+    {{ cassandra_cipher_suites_client_encryption | to_nice_yaml(indent=4) | trim | indent(4) }}
+{% endif %}
+
+internode_compression: {{ cassandra_internode_compression }}
+inter_dc_tcp_nodelay: {{ cassandra_inter_dc_tcp_nodelay }}
+trace_type_query_ttl: {{ cassandra_tracetype_query_ttl }}s
+trace_type_repair_ttl: {{ cassandra_tracetype_repair_ttl }}s
+user_defined_functions_enabled: {{ cassandra_enable_user_defined_functions }}
+scripted_user_defined_functions_enabled: {{ cassandra_enable_scripted_user_defined_functions }}
+transparent_data_encryption_options:
+  {{ cassandra_transparent_data_encryption_options | to_nice_yaml | indent(2) }}
+tombstone_warn_threshold: {{ cassandra_tombstone_warn_threshold }}
+tombstone_failure_threshold: {{ cassandra_tombstone_failure_threshold }}
+replica_filtering_protection:
+  cached_rows_warn_threshold: {{ cassandra_cached_rows_warn_threshold | default(2000) }}
+  cached_rows_fail_threshold: {{ cassandra_cached_rows_fail_threshold | default(32000) }}
+batch_size_warn_threshold: {{ cassandra_batch_size_warn_threshold_in_kb }}KiB
+batch_size_fail_threshold: {{ cassandra_batch_size_fail_threshold_in_kb }}KiB
+unlogged_batch_across_partitions_warn_threshold: {{ cassandra_unlogged_batch_across_partitions_warn_threshold }}
+compaction_large_partition_warning_threshold: {{ cassandra_compaction_large_partition_warning_threshold_mb }}MiB
+compaction_tombstone_warning_threshold: {{ cassandra_compaction_tombstone_warning_threshold | default(100000) }}
+{% if cassandra_max_value_size_in_mb is defined %}
+max_value_size: {{ cassandra_max_value_size_in_mb }}MiB
+{% endif %}
+audit_logging_options:
+  {{ cassandra_audit_logging_options | to_nice_yaml | indent(2) }}
+{% if cassandra_full_query_logging_options is defined %}
+full_query_logging_options:
+  {{ cassandra_full_query_logging_options | to_nice_yaml | indent(2) }}
+{% endif %}
+diagnostic_events_enabled: {{ cassandra_diagnostic_events_enabled | default(false) }}
+native_transport_flush_in_batches_legacy: {{ cassandra_native_transport_flush_in_batches_legacy | default(false) }}
+repaired_data_tracking_for_range_reads_enabled: {{ cassandra_repaired_data_tracking_for_range_reads_enabled | default(false) }}
+repaired_data_tracking_for_partition_reads_enabled: {{ cassandra_repaired_data_tracking_for_partition_reads_enabled | default(false) }}
+report_unconfirmed_repaired_data_mismatches: {{ cassandra_report_unconfirmed_repaired_data_mismatches | default(false) }}
+tables_warn_threshold: {{ cassandra_table_count_warn_threshold | default(150) }}
+keyspaces_warn_threshold: {{ cassandra_keyspace_count_warn_threshold | default(40) }}
+auth_read_consistency_level: {{ cassandra_auth_read_consistency_level | default('LOCAL_QUORUM') }}
+auth_write_consistency_level: {{ cassandra_auth_write_consistency_level | default('EACH_QUORUM') }}
+materialized_views_enabled: {{ cassandra_enable_materialized_views }}
+sasi_indexes_enabled: {{ cassandra_enable_sasi_indexes | default(false) }}
+transient_replication_enabled: {{ cassandra_transient_replication_enabled | default(false) }}
+drop_compact_storage_enabled: {{ cassandra_drop_compact_storage_enabled | default(false) }}
+use_statements_enabled: {{ cassandra_use_statements_enabled | default(true) }}
+{% if cassandra_client_error_reporting_exclusions is defined %}
+  {{ client_error_reporting_exclusions | to_nice_yaml | indent(2)}}
+{% endif %}
+{% if cassandra_additional_options is defined %}
+  {{ cassandra_additional_options | to_nice_yaml | indent(2) }}
+{% endif %}
+disk_access_mode: {{ cassandra_disk_access_mode | default('auto') }}

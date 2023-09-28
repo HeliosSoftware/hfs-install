@@ -1,0 +1,40 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  # - name: centos7
+  #   image: centos:7
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: /sbin/init
+  #   privileged: True
+  #   tmpfs:
+  #     - /run
+  #     - /tmp
+  #   capabilities:
+  #     - SYS_ADMIN
+  #   memory: "1.5G"
+  - name: ubuntu
+    image: ubuntu:20.04
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+  env:
+    PYTHONWARNINGS: "ignore:.*U.*mode is deprecated:DeprecationWarning"

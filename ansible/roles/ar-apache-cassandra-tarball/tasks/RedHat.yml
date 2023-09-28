@@ -1,0 +1,12 @@
+---
+- name: cassandra init.d script
+  template:
+    src: "{{ cassandra_version }}/init_cassandra_RedHat.j2"
+    dest: /etc/init.d/cassandra
+    mode: "0755"
+
+
+- name: ensure required OS libs are installed
+  yum:
+    name: jemalloc
+    state: present

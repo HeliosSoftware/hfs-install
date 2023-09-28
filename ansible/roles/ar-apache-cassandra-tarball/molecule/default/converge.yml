@@ -1,0 +1,21 @@
+---
+  - name: Install packages
+    hosts: all
+    gather_facts: no
+    tasks:
+      - name: Install needed packages
+        package:
+          name: [net-tools, procps, wget, unzip, curl, openssl]
+          state: present
+
+  - name: Converge
+    hosts: all
+    roles:
+      - role: ar-openjdk
+      - role: ar-apache-cassandra-tarball
+    vars:
+      docker: true
+      java_packages: openjdk-11-jdk
+      java_home: /usr/lib/jvm/java-11-openjdk-amd64
+      cassandra_version: 4.1.2
+      cassandra_download_url: "https://archive.apache.org/dist/cassandra/{{ cassandra_version }}/apache-cassandra-{{ cassandra_version }}-bin.tar.gz"

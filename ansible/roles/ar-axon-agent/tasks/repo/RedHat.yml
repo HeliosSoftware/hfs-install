@@ -1,0 +1,25 @@
+---
+- name: Add AxonOps RPM repository key
+  rpm_key:
+    key: https://repo.axonops.com/public/axonops-public/gpg.8E3D7C66DBAF333E.key
+    state: present
+
+
+- name: Add AxonOps yum repository
+  yum_repository:
+    name: axonops-yum
+    description: "AxonOps Repository"
+    baseurl: https://repo.axonops.com/public/axonops-public/yum/rpm/el/$releasever/$basearch
+    repo_gpgcheck: yes
+    gpgcheck: yes
+    gpgkey: https://repo.axonops.com/public/axonops-public/gpg.8E3D7C66DBAF333E.key
+
+
+- name: Add AxonOps noarch yum repository
+  yum_repository:
+    description: "AxonOps NoArch Repository"
+    name: axonops-yum-noarch
+    baseurl: https://repo.axonops.com/public/axonops-public/yum/rpm/el/$releasever/noarch
+    repo_gpgcheck: yes
+    gpgcheck: yes
+    gpgkey: https://repo.axonops.com/public/axonops-public/gpg.8E3D7C66DBAF333E.key
