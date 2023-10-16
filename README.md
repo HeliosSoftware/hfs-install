@@ -16,21 +16,21 @@ There are two high level steps in this automation:
 
 
 ### Preparation ###
-1. Clone this repository on a Linux host.
-2. Download Linux Terraform binary to the Linux host and add it to one of the executable paths.
-3. At the root of this repository, manually create the following file.
+1. Clone this repository.
+2. Install [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+3. Run `terraform init`
+4. Install [make](https://formulae.brew.sh/formula/make)
+5. At the root of this repository, manually create the following file.
 ```
 ./.aws/config
 ```
-4. And add the following content to ./.aws/config
+4. Add the following content to ./.aws/config
 ```
 export AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
 export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 export AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
 export ANSIBLE_HOST_KEY_CHECKING=false
 ```
-
-
 
 ### Executing Terraform to Provision AWS ###
 The Terraform has been configured to provision a VPC network in us-east-1 region, with a CIDR range of `10.0.0.0/16`.
@@ -42,14 +42,14 @@ Private subnet CIDR range: 10.0.1.0/24
 
 A bastion Linux server is provisioned into the Public subnet range with a public Elastic IP. This is so you can initially SSH to this node. There are other means of accessing Linux servers in AWS, such as the Client VPN service. This PoC setup has been created with a simple setup but you may want to implement this differently.
 
-The configurations for Terraform can be found in ./terraform/variables.tf
+The configurations for Terraform can be found in ./terraform/variables.tf.  Replace the automation_ssh_pubkey default value to the contents of ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub
 
 Assuming the terraform binary is executable on your Linux server, the following command can then be used to execute Terraform.
 
 ```
 source .aws/config
-./make.sh terraform plan - shows the plan of terraform execution
-./make.sh terraform apply - applies terraform configurations
+./make.sh terraform plan
+./make.sh terraform apply
 ```
 
 The provisioning will take a while but the command execution should show the progress.
