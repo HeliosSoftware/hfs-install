@@ -61,7 +61,7 @@ Once the terraform execution completes, you should now be able to SSH to the bas
 Once you have logged in to the bastion, follow the steps below to install Ansible.
 
 ```
-apt-install python3-pip
+sudo apt install python3-pip
 pip3 install boto3
 pip3 install ansible
 ```
