@@ -2,7 +2,7 @@
 
 - debug: msg="OS Family {{ ansible_os_family }}"
 
-- include: Debian.yml
+- include_tasks: Debian.yml
   when: ansible_os_family == "Debian"
-- include: RedHat.yml
+- include_tasks: RedHat.yml
   when: ansible_os_family == "RedHat"

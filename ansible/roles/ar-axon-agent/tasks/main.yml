@@ -1,11 +1,11 @@
 ---
 
-- include: install.yml
+- include_tasks: install.yml
   when:
     - install is defined
     - install
 
-- include: configure.yml
+- include_tasks: configure.yml
   when:
     - configure is defined
     - configure

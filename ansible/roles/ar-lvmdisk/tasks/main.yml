@@ -9,5 +9,5 @@
   with_dict: "{{ lvm_setup.lv_list }}"
 
 - name: setup the lvm mounts for the top level directories
-  include: setup_lvm_disk.yml
+  include_tasks: setup_lvm_disk.yml
   when: lvm_setup.use_lvm

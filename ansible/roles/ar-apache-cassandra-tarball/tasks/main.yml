@@ -1,21 +1,21 @@
 ---
 - debug: msg="os-config.yml"
-- include: os-config.yml
+- include_tasks: os-config.yml
 
 
 - debug: msg="cassandra.yml"
-- include: cassandra.yml
+- include_tasks: cassandra.yml
 
 
 - debug: msg="Debian.yml"
   when: ansible_os_family == "Debian"
-- include: Debian.yml
+- include_tasks: Debian.yml
   when: ansible_os_family == "Debian"
 
 
 - debug: msg="RedHat.yml"
   when: ansible_os_family == "RedHat"
-- include: RedHat.yml
+- include_tasks: RedHat.yml
   when: ansible_os_family == "RedHat"
 
 - name: Install systemd file
