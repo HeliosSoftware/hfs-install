@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  cassandra:
+    container_name: cassandra
+    image: cassandra:4.1.3
+    ports:
+      - "9042:9042"
+    networks:
+      - hfs-network
+    restart: unless-stopped
+    
+
+  helios-fhir-server:
+    container_name: helios-fhir-server
+    image: gcr.io/helios-fhir-server/enterprise-edition:latest
+    ports:
+      - "8181:8181"
+    environment:
+      CASSANDRA_PROPERTIES_CONTACTPOINTS: "cassandra"
+    networks:
+      - hfs-network
+    depends_on:
+      - cassandra
+    restart: unless-stopped
+
+
+networks:
+  hfs-network:
+    name: hfs-network
+    driver: bridge

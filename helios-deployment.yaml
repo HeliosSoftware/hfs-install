@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helios-fhir-deployment
+spec:
+  replicas: 1
+  strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1    # Number of pods that can be unavailable during updates
+        maxSurge: 1         # Number of new pods that can be created above the desired number of pods
+  selector:
+    matchLabels:
+     app: helios-fhir
+  template:
+    metadata:
+      labels:
+        app: helios-fhir
+    spec:
+      containers:
+      - name: helios-fhir-container
+        image: gcr.io/helios-fhir-server/enterprise-edition:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "5120Mi"   # Requested memory (minimum required)
+            cpu: "2000m"       # Requested CPU (minimum required)
+          limits:
+            memory: "8192Mi"   # Maximum memory the container can use
+            cpu: "3000m"       # Maximum cpu the container can use
+        env:
+        - name: CASSANDRA_PROPERTIES_CONTACTPOINTS
+          valueFrom:
+            configMapKeyRef:
+              name: helios-configmap
+              key: CASSANDRA_PROPERTIES_CONTACTPOINTS
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: helios-configmap
+              key: DATABASE_URL
+        ports:
+        - containerPort: 8181
+        livenessProbe:
+          httpGet:
+            path: /ui
+            port: 8181
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+             path: /ui
+             port: 8181
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: helios-fhir-service
+  annotations:
+   service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  selector:
+    app: helios-fhir
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8181
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helios-configmap
+data:
+  CASSANDRA_PROPERTIES_CONTACTPOINTS: "cassandra"
+  DATABASE_URL: "my-db-url"
+

@@ -1,0 +1,89 @@
+resource "aws_instance" "kubectl-server" {
+  ami                         = "ami-0230bd60aa48260c6"
+  key_name                    = "kubectl1-keypair"
+  instance_type               = "t3.micro"
+  associate_public_ip_address = true
+  subnet_id                   = aws_subnet.public-us-east-1a.id
+  vpc_security_group_ids      = [aws_security_group.kubectl-server-sg.id]
+
+  tags = {
+    Name = "kubectl-server"
+  }
+}
+
+resource "aws_eks_node_group" "worker-nodes" {
+  cluster_name    = aws_eks_cluster.helios-eks-cluster.name
+  node_group_name = "worker-nodes"
+  node_role_arn   = aws_iam_role.eksWorkerRole.arn
+
+  subnet_ids = [
+    aws_subnet.private-us-east-1a.id,
+    aws_subnet.private-us-east-1c.id
+  ]
+
+  capacity_type  = "ON_DEMAND"
+  instance_types = [var.worker_instance_type]
+  disk_size      = "60"
+
+  remote_access {
+    ec2_ssh_key = "worker-keypair"
+  }
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 2
+    min_size     = 1
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  labels = {
+    role = "general"
+  }
+
+
+  # taint {
+  #   key    = "team"
+  #   value  = "devops"
+  #   effect = "NO_SCHEDULE"
+  # }
+
+  # launch_template {
+  #   name    = aws_launch_template.eks-worker_node_launch_template.name
+  #   version = aws_launch_template.eks-worker_node_launch_template.latest_version
+  # }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
+  ]
+}
+
+# resource "aws_launch_template" "eks-worker_node_launch_template" {
+#   name = "eks-worker_node_launch_template"
+#   instance_type = "t3.xlarge"
+#   block_device_mappings {
+#     ebs {
+#       volume_size = 60
+#       volume_type = "gp3"
+#     }
+#   }
+# }
+
+# resource "aws_launch_template" "eks-with-disks" {
+#   name = "eks-with-disks"
+
+#   key_name = "local-provisioner"
+
+#   block_device_mappings {
+#     device_name = "/dev/xvdb"
+
+#     ebs {
+#       volume_size = 50
+#       volume_type = "gp2"
+#     }
+#   }
+# }
