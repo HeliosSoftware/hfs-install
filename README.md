@@ -1,19 +1,31 @@
 # README
 
-This README describes the steps in creating a statically defined AWS VPC and Cassandra servers on EC2 instances.
+This README provides comprehensive instructions for creating a statically defined AWS VPC, Cassandra servers on EC2 instances, and additional infrastructure components using Terraform and Ansible.
 
 There are two high level steps in this automation:
 
 1. Terraform to provision the following:
-* AWS VPC network in us-east-1
-* 2 subnets in VPC, public and private, both in us-east-1
+* AWS VPC networks in us-east-1
+* 6 subnets in VPC, public and private, all in us-east-1
 * Network routing
-* Security group
+* EKS cluster and related configurations
+* IAM roles and policies
+* Security groups
 * Bastion Linux server with a public IP address (also used for NAT gateway)
 * Cassandra Linux servers
 
 2. Ansible automation to provision Cassandra cluster on the Linux hosts provisioned in step 1
 
+
+### Using Bash Shell ###
+You must use a bash shell to run the Terraform provisioning commands.
+
+### Manually Creating Key Pairs ###
+You must manually create two key pairs in your AWS account named kubectl1-keypair and worker-keypair, both of type RSA. The declaration of these key pairs is in the worker.tf file.
+
+
+### S3 Backend Bucket ###
+Before running Terraform, manually create an S3 backend bucket named helios-terraform-bucket in your AWS account.
 
 ### Preparation ###
 1. Clone this repository.
@@ -31,6 +43,12 @@ export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 export AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
 export ANSIBLE_HOST_KEY_CHECKING=false
 ```
+### Setting AWS Credentials ###
+In addition to the .aws/config method that is already mentioned in the README, you can also set your AWS access key and secret access key using the following export commands in bash:
+
+* export AWS_ACCESS_KEY_ID=<your_access_key_id>
+* export AWS_SECRET_ACCESS_KEY=<your_secret_acc
+
 
 ### Executing Terraform to Provision AWS ###
 The Terraform has been configured to provision a VPC network in us-east-1 region, with a CIDR range of `10.0.0.0/16`.
@@ -54,6 +72,21 @@ source .aws/config
 
 The provisioning will take a while but the command execution should show the progress.
 
+### Running Terraform Commands ###
+To run Terraform commands, you must first change directory to the terraform directory:
+
+cd terraform
+Then, you can run the following commands:
+
+* terraform init: Initializes the Terraform working directory.
+* terraform destroy: Destroys the Terraform-provisioned infrastructure.
+To run the following commands, you must change directory back to the root directory of the repository:
+
+* cd ..
+Then, you can run the following commands:
+
+* ./make.sh terraform plan: Generates a plan of the Terraform configuration.
+* ./make.sh terraform apply: Applies the Terraform configuration.
 
 ### Setup Bastion ###
 Once the terraform execution completes, you should now be able to SSH to the bastion using the SSH private key. The bastion pubic IP address can now be found in the AWS console.
@@ -96,5 +129,3 @@ source .aws/config
 cd ansible
 bash start-cassandra.sh
 ```
-
-
