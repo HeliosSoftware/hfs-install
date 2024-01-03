@@ -1,9 +1,9 @@
 # Helios FHIR Server AWS Reference Architecture
 
-##Introduction
+## Introduction
 This document provides recommended practices and a comprehensive setup instructions for a reference architecture for the Helios FHIR Server on AWS.
 
-##Reference Architecture
+## Reference Architecture
 This reference architecture consists of the following components:
 - An Amazon Virtual Private Cloud (helios-vpc)
 - A public subnet and a private subnet
