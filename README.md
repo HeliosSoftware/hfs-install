@@ -1,4 +1,16 @@
-# Helios FHIR Server Install
+# Helios FHIR Server AWS Reference Architecture
+
+##Introduction
+This document provides recommended practices and a comprehensive setup instructions for a reference architecture for the Helios FHIR Server on AWS.
+
+##Reference Architecture
+This reference architecture consists of the following components:
+- An Amazon Virtual Private Cloud (helios-vpc)
+- A public subnet and a private subnet
+- A bastion Linux instance
+- ...
+
+![Helios FHIR Server AWS Reference Architecture](hfs-aws.png)
 
 This README provides comprehensive instructions for creating a statically defined AWS VPC, Cassandra servers on EC2 instances, and additional infrastructure components using Terraform and Ansible.
 
