@@ -1,4 +1,4 @@
-# README
+# Helios FHIR Server Install
 
 This README provides comprehensive instructions for creating a statically defined AWS VPC, Cassandra servers on EC2 instances, and additional infrastructure components using Terraform and Ansible.
 
