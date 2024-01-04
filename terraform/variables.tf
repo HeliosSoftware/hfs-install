@@ -11,22 +11,22 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "zone" {
-  description = "AWS zone to deploy to"
+variable "zone_1" {
+  description = "First AWS zone to deploy to"
   type        = string
   default     = "us-east-1a"
 }
 
-variable "automation_ssh_pubkey" {
-  description = "Public key for the ubuntu user"
+variable "zone_2" {
+  description = "Second AWS zone to deploy to"
   type        = string
-  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBiz5YOIUBqjyIrF1mx9hrXhKHrIi6yW1NvHO2ij2kuA"
+  default     = "us-east-1b"
 }
 
-variable "poc_vpc_cidr" {
-  description = "CIDR block for the entire cassandra VPC"
+variable "helios_ssh_pubkey" {
+  description = "Public key for the system users"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBiz5YOIUBqjyIrF1mx9hrXhKHrIi6yW1NvHO2ij2kuA"
 }
 
 variable "public_subnet_cidr" {
@@ -35,17 +35,35 @@ variable "public_subnet_cidr" {
   default     = "10.0.255.0/25"
 }
 
-variable "gateway_private_ip" {
-  description = "Private IP address to give the Gateway server"
-  type        = string
-  default     = "10.0.255.10"
-}
-
 # VPC CIDR
 variable "vpc_cidr" {
   type        = string
   default     = "10.0.0.0/16"
   description = "CIDR for VPC"
+}
+
+variable "public_subnet_1_cidr" {
+  type        = string
+  default     = "10.0.1.0/24"
+  description = "CIDR for Public Subnet 1"
+}
+
+variable "public_subnet_2_cidr" {
+  type        = string
+  default     = "10.0.2.0/24"
+  description = "CIDR for Public Subnet 2"
+}
+
+variable "private_subnet_1_cidr" {
+  type        = string
+  default     = "10.0.3.0/24"
+  description = "CIDR for Private Subnet 1"
+}
+
+variable "private_subnet_2_cidr" {
+  type        = string
+  default     = "10.0.4.0/24"
+  description = "CIDR for Private Subnet 2"
 }
 
 # Instance type

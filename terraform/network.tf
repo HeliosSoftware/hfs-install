@@ -1,85 +1,104 @@
-resource "aws_vpc" "poc" {
-  cidr_block = var.poc_vpc_cidr
-
+# Public Subnet creation
+resource "aws_subnet" "public-subnet-1" {
+  vpc_id                  = aws_vpc.helios-vpc.id
+  cidr_block              = var.public_subnet_1_cidr
+  availability_zone       = var.zone_1
+  map_public_ip_on_launch = true
   tags = {
-    Name = "Cassandra poc Testing VPC"
+    Name = "public-subnet-1"
   }
 }
 
-##############################################
-# VPN subnet (uses Internet gateway)
-
-resource "aws_internet_gateway" "public-gw" {
-  vpc_id = aws_vpc.poc.id
-  tags   = {
-    Name = "Internet Gateway"
+resource "aws_subnet" "public-subnet-2" {
+  vpc_id                  = aws_vpc.helios-vpc.id
+  cidr_block              = var.public_subnet_2_cidr
+  availability_zone       = var.zone_2
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "public-subnet-2"
   }
 }
 
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.poc.id
+# Private Subnet creation
+resource "aws_subnet" "private-subnet-1" {
+  vpc_id                  = aws_vpc.helios-vpc.id
+  cidr_block              = var.private_subnet_1_cidr
+  availability_zone       = var.zone_1
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "private-subnet-1"
+  }
+}
+
+resource "aws_subnet" "private-subnet-2" {
+  vpc_id                  = aws_vpc.helios-vpc.id
+  cidr_block              = var.private_subnet_2_cidr
+  availability_zone       = var.zone_2
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "private-subnet-2"
+  }
+}
+
+
+# IGW creation for VPC
+resource "aws_internet_gateway" "helios-igw" {
+  vpc_id = aws_vpc.helios-vpc.id
+  depends_on = [aws_vpc.helios-vpc]
+  tags = {
+    Name = "helios-igw"
+  }
+}
+
+# Route table for Public Subnet
+resource "aws_route_table" "helios-rt-public" {
+  vpc_id = aws_vpc.helios-vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.helios-igw.id
+  }
+  tags = {
+    Name = "helios-rt-public"
+  }
+}
+
+# Route table for Private Subnet
+resource "aws_route_table" "helios-rt-private" {
+  vpc_id = aws_vpc.helios-vpc.id
   route {
     cidr_block     = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.public-gw.id
+    network_interface_id = aws_instance.bastion_server.primary_network_interface_id
   }
   tags = {
-    Name = "Public Route table"
+    Name = "helios-rt-private"
   }
 }
 
-resource "aws_route_table_association" "public" {
-  route_table_id = aws_route_table.public.id
-  subnet_id      = aws_subnet.public.id
+# Route Table association for Public Subnet
+resource "aws_route_table_association" "subnet_association-public-subnet-1" {
+  subnet_id      = aws_subnet.public-subnet-1.id
+  route_table_id = aws_route_table.helios-rt-public.id
 }
 
-resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.poc.id
-  cidr_block        = "10.0.255.0/24"
-  availability_zone = var.zone
-
-  tags = {
-    Name = "Public Subnet"
-  }
+resource "aws_route_table_association" "subnet_association-public-subnet-2" {
+  subnet_id      = aws_subnet.public-subnet-2.id
+  route_table_id = aws_route_table.helios-rt-public.id
 }
 
-##############################################
-# LAN subnet (uses NAT gateway for Internet access)
-
-resource "aws_subnet" "private" {
-  vpc_id            = aws_vpc.poc.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = var.zone
-
-  tags = {
-    Name = "Cassandra Subnet"
-  }
+# Route Table association for Private Subnets
+resource "aws_route_table_association" "subnet_association-private-1" {
+  subnet_id      = aws_subnet.private-subnet-1.id
+  route_table_id = aws_route_table.helios-rt-private.id
 }
 
-
-
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.poc.id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    network_interface_id = aws_instance.gateway_server.primary_network_interface_id
-  }
-  tags = {
-    Name = "NAT Route table"
-  }
+resource "aws_route_table_association" "subnet_association-private-2" {
+  subnet_id      = aws_subnet.private-subnet-2.id
+  route_table_id = aws_route_table.helios-rt-private.id
 }
-
-resource "aws_route_table_association" "private" {
-  route_table_id = aws_route_table.private.id
-  subnet_id      = aws_subnet.private.id
-#
-}
-
-##############################################
-# Security groups
 
 resource "aws_security_group" "all" {
-  name   = "axonops-poc-testing-all"
-  vpc_id = aws_vpc.poc.id
+  name   = "Helios Security Group - All"
+  vpc_id = aws_vpc.helios-vpc.id
 
   # Outbound access
   egress {
@@ -118,5 +137,5 @@ resource "aws_security_group" "all" {
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/8"]
   }
-}
 
+}
