@@ -100,7 +100,7 @@ resource "aws_instance" "cassandra_0" {
     ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
+    # Seeds       = "10.0.3.20,10.0.3.21"
     Environment = "Production"
   }
   lifecycle {
@@ -144,7 +144,7 @@ resource "aws_instance" "cassandra_1" {
     ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
+    # Seeds       = "10.0.3.20,10.0.3.21"
     Environment = "Production"
   }
   lifecycle {
@@ -189,7 +189,7 @@ resource "aws_instance" "cassandra_2" {
     ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
+    # Seeds       = "10.0.3.20,10.0.3.21"
     Environment = "Production"
   }
   lifecycle {
@@ -234,7 +234,7 @@ resource "aws_instance" "cassandra_3" {
     ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
+    # Seeds       = "10.0.3.20,10.0.3.21"
     Environment = "Production"
   }
   lifecycle {
@@ -279,7 +279,7 @@ resource "aws_instance" "cassandra_4" {
     ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
+    # Seeds       = "10.0.3.20,10.0.3.21"
     Environment = "Production"
   }
   lifecycle {
