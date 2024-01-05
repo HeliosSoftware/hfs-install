@@ -1,6 +1,6 @@
 ---
 - name: Deploy Cassandra
-  hosts: "tag_ClusterName_helios,&tag_Role_cassandra"
+  hosts: "tag_ClusterName_axonops,&tag_Role_cassandra"
   gather_facts: true
   become: true
   any_errors_fatal: true
