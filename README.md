@@ -140,7 +140,7 @@ You can either copy this cloned git files to the bastion server, or git clone it
 
 Ansible has been configured to automatically determine the servers to deploy the cluster from EC2 tags. Tags were created during the Terraform step. The ansible assumes all servers with the tag defined in `ansible/inventory/axonops/aws_ec2.yml` file.
 
-The configurations for Cassandra are defined in `ansible/group_vars/tag_ClusterName_axonops/*.yml`
+The configurations for Cassandra are defined in `ansible/group_vars/tag_ClusterName_helios/*.yml`
 tag_ClusterName_axonops must match the key and value of the tag for the cluster.
 
 

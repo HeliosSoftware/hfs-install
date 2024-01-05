@@ -5,7 +5,7 @@ keyed_groups:
     prefix: tag
 
 regions:
-  - {{ lookup('ansible.builtin.env', 'AWS_DEFAULT_REGION') }}
+  - us-east-1
 filters:
   tag:ClusterName:
     - helios
