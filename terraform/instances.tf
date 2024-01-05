@@ -99,6 +99,7 @@ resource "aws_instance" "cassandra0" {
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.1.20,10.0.1.21"
+    Environment = "Production"
   }
   lifecycle {
     ignore_changes = [
