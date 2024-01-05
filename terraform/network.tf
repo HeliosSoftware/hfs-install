@@ -62,12 +62,29 @@ resource "aws_route_table" "helios-rt-public" {
   }
 }
 
+resource "aws_eip" "nat_gateway" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.nat_gateway.id
+  subnet_id     = aws_subnet.public-subnet-1.id
+
+  tags = {
+    Name = "NAT Gateway for Internet access"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.helios-igw]
+}
+
 # Route table for Private Subnet
 resource "aws_route_table" "helios-rt-private" {
   vpc_id = aws_vpc.helios-vpc.id
   route {
     cidr_block     = "0.0.0.0/0"
-    network_interface_id = aws_instance.bastion_server.primary_network_interface_id
+    nat_gateway_id = aws_nat_gateway.nat_gateway.id
   }
   tags = {
     Name = "helios-rt-private"
