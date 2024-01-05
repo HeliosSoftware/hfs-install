@@ -4,7 +4,6 @@
   gather_facts: true
   become: true
   any_errors_fatal: true
-  serial: 1
   tasks:
     - name: Start cassandra
       service:
