@@ -49,10 +49,6 @@ cassandra_ssl_client_keystore_file: "{{ cassandra_keystore_dir }}/keystore.jks"
 cassandra_ssl_client_require_client_auth: false
 cassandra_ssl_client_encryption_protocol: TLSv1.2
 
-#cassandra_seeds: "10.116.88.40,10.116.89.40"
-# cassandra_seeds: "10.0.1.20,10.0.1.21"
-# cassandra_dc: us-east-1
-# cassandra_cluster_name: performance
 cassandra_num_tokens: 16
 cassandra_auto_bootstrap: true
 cassandra_auto_snapshot: true

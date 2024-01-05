@@ -100,7 +100,7 @@ resource "aws_instance" "cassandra0" {
     ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
-    Seeds       = "10.0.1.20,10.0.1.21"
+    Seeds       = "10.0.3.20,10.0.3.21"
     Environment = "Production"
   }
   lifecycle {
@@ -144,7 +144,7 @@ resource "aws_instance" "cassandra0" {
 //    ClusterName = "helios"
 //    DC          = "helios-dc"
 //    # Rack        = "rack1"
-//    Seeds       = "10.0.1.20,10.0.1.21"
+//    Seeds       = "10.0.3.20,10.0.3.21"
 //  }
 //  lifecycle {
 //    ignore_changes = [
