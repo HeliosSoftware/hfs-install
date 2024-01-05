@@ -40,7 +40,7 @@ This reference architecture consists of the following components:
 There are two high level steps in this automation:
 
 1. Use Terraform to provision the resources in the `terraform` folder.
-2. SSH to the Bastion Linux instance and run Ansible automation to provision Cassandra cluster on the Linux hosts provisioned in step 1
+2. SSH to the Bastion Linux instance and run Ansible automation to provision Cassandra cluster on the Linux hosts provisioned in step 1.
 
 ## Installation Steps
 
@@ -65,7 +65,7 @@ export ANSIBLE_HOST_KEY_CHECKING=false
 
 The `variables.tf` file contains several variables that you may want to modify such as specific AWS Regions, Zones and other settings.
 
-Replace the helios_ssh_pubkey default value to the contents of your local ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub
+Replace the local_ssh_pubkey default value to ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub (default)
 
 ### Run Terraform Apply ###
 
@@ -81,23 +81,40 @@ From your local machine, connect to the instance:
 
 `ssh ubuntu@[bastion ip address]`
 
+Please NOTE:  It may take some time for the setup steps of the Bastion instance to complete.  The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance. 
+
 ### Clone this Repository (again) ###
 
 From the Bastion Linux Instance, clone this repository.
 
 `git clone https://github.com/HeliosSoftware/hfs-install.git`
 
+Create the .aws directory 
+
+`mkdir hfs-install/.aws`
+
 ### Copy your local .aws/config file to the Bastion Linux Instance ###
 
-Logout of the bastion linux instance, or use a new local terminal, and execute this next command on your local machine in the `hfs-install` directory:
+Logout of the bastion linux instance, or use a new local terminal, and execute this next command on your local machine from the `hfs-install/.aws` directory:
 
-`scp ./.aws/config ubuntu@[bastion ip address]:~/hfs-install/.aws/config`
+`cd ../.aws`
+
+`scp config ubuntu@[bastion ip address]:~/hfs-install/.aws/config`
+
+Connect again to the Bastion instance.
+
+`ssh ubuntu@[bastion ip address]`
+
+Verify that the .aws/config file is present and correct
+
+`cat hfs-install/.aws/config`
 
 ### Execute Cassandra Ansible Setup Scripts fom the Bastion Linux Instance ###
 
 `ssh ubuntu@[bastion ip address]`
 
 ```
+cd hfs-install
 source .aws/config
 cd ansible
 bash apache-cassandra-axonops.sh

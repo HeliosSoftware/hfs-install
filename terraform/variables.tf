@@ -23,10 +23,10 @@ variable "zone_2" {
   default     = "us-east-1b"
 }
 
-variable "helios_ssh_pubkey" {
-  description = "Public key for the system users"
+variable "local_ssh_public_key" {
+  description = "Public key to access the bastion server.  Either ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub"
   type        = string
-  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBiz5YOIUBqjyIrF1mx9hrXhKHrIi6yW1NvHO2ij2kuA"
+  default     = "~/.ssh/id_ed25519.pub"
 }
 
 variable "public_subnet_cidr" {

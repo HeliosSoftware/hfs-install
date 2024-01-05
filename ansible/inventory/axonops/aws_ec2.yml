@@ -5,10 +5,10 @@ keyed_groups:
     prefix: tag
 
 regions:
-  - us-east-1
+  - {{ lookup('ansible.builtin.env', 'AWS_DEFAULT_REGION') }}
 filters:
   tag:ClusterName:
-    - axonops
+    - helios
 
 strict_permissions: False
 hostnames:
