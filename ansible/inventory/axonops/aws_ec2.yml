@@ -8,7 +8,7 @@ regions:
   - us-east-1
 filters:
   tag:ClusterName:
-    - helios
+    - axonops
 
 strict_permissions: False
 hostnames:

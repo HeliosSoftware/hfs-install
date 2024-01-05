@@ -21,6 +21,19 @@ This reference architecture consists of the following components:
 - Have an [AWS IAM User Account](https://aws.amazon.com/iam) and [create access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey). In order to successfully provision this reference architecture the user must also be permitted to create the following AWS resources:
   - VPC - AmazonVPCFullAccess
   - EC2 - AmazonEC2FullAccess
+  - IAM Role - IAMFullAccess
+  - EKS - You will need to add a custom policy named EKS-Full-Access
+    - `{
+      "Version": "2012-10-17",
+      "Statement": [
+      {
+      "Sid": "eksadministrator",
+      "Effect": "Allow",
+      "Action": "eks:*",
+      "Resource": "*"
+      }
+      ]
+      }`
   - Subnet
   - Route Table
   - Route Table Association
@@ -31,7 +44,6 @@ This reference architecture consists of the following components:
   - Target Group (if using Application or Network Load Balancer)
   - CloudWatch Alarm
   - IAM Instance Profile
-  - IAM Role
   - IAM Role Policy
   - Route 53 (optional)
 

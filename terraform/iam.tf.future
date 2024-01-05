@@ -1,8 +1,7 @@
-// EKS Cluster Role and policy
+// EKS Cluster Role and Policy
 
 resource "aws_iam_role" "eksClusterRole" {
   name = "eksClusterRole"
-
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -47,7 +46,6 @@ resource "aws_iam_role_policy_attachment" "AmazonEBSCSIDriverPolicy" {
 
 
 // EKS Worker Node Policy and Role
-
 resource "aws_iam_role" "eksWorkerRole" {
   name = "eksWorkerRole"
 
@@ -89,7 +87,6 @@ resource "aws_iam_policy" "autoscaler" {
   ]
 }
 EOF
-
 }
 
 resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {

@@ -20,7 +20,7 @@ variable "zone_1" {
 variable "zone_2" {
   description = "Second AWS zone to deploy to"
   type        = string
-  default     = "us-east-1b"
+  default     = "us-east-1c"
 }
 
 variable "local_ssh_public_key" {

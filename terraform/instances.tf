@@ -51,6 +51,8 @@ sudo apt-get -y install pipenv
 sudo apt-add-repository -y ppa:ansible/ansible
 sudo apt --yes update
 sudo apt --yes install ansible
+sudo pip3 install boto3
+sudo pip3 install ansible
 echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
 echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519.pub
 chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
@@ -95,7 +97,7 @@ resource "aws_instance" "cassandra0" {
     Scalable    = "false"
     Role        = "cassandra"
     Project     = "Helios Reference Architecture"
-    ClusterName = "helios"
+    ClusterName = "axonops"
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.1.20,10.0.1.21"
