@@ -14,7 +14,7 @@
 
     - name: Wait for cassandra
       ansible.builtin.wait_for:
-        host: "{{ ansible_default_ipv4.interface }}"
+        host: "{{ ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) }}"
         port: 9042
         delay: 30
         

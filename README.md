@@ -8,6 +8,7 @@ This reference architecture consists of the following components:
 - An Amazon Virtual Private Cloud (helios-vpc)
 - Public and private subnets across two different availability zones for a total of 4 subnets.
 - A bastion Linux instance used to provide secure access to Linux instances located in the private and public subnets of your virtual private cloud.  SSH to this instance to perform initial Cassandra cluster installation tasks, and occasional maintenance as required.
+- Configuration for using [AxonOps](https://axonops.com/) - a cloud native solution to monitor, maintain and backup your Cassandra cluster.
 - A 5-node Cassandra Cluster with nodes spread across two availability zones.
 - Helios FHIR Server installed in an Amazon EKS Cluster and configured for auto-scaling.
 - IAM Roles and Policies
@@ -77,7 +78,7 @@ export ANSIBLE_HOST_KEY_CHECKING=false
 
 The `variables.tf` file contains several variables that you may want to modify such as specific AWS Regions, Zones and other settings.
 
-Replace the local_ssh_pubkey default value to ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub (default)
+- Required - Replace the local_ssh_pubkey default value to ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub (default)  This automation uses your pre-existing public key to access the remote Linux Bastion instance.  If you don't yet have one in the `~/.ssh` folder, create one with this command `ssh-keygen -t ed25519`
 
 ### Run Terraform Apply ###
 
@@ -109,6 +110,8 @@ Create the .aws directory
 
 Logout of the bastion linux instance, or use a new local terminal, and execute this next command on your local machine from the `hfs-install/.aws` directory:
 
+`logout`
+
 `cd ../.aws`
 
 `scp config ubuntu@[bastion ip address]:~/hfs-install/.aws/config`
@@ -132,47 +135,8 @@ cd ansible
 bash apache-cassandra-axonops.sh
 ```
 
-### Manually Creating Key Pairs ###
-You must manually create two key pairs in your AWS account named kubectl1-keypair and worker-keypair, both of type RSA. The declaration of these key pairs is in the worker.tf file.
-
-### Setup Bastion ###
-Once the terraform execution completes, you should now be able to SSH to the bastion using the SSH private key. The bastion pubic IP address can now be found in the AWS console.
-
-Once you have logged in to the bastion, follow the steps below to install Ansible.
-
-```
-sudo apt install python3-pip
-pip3 install boto3
-pip3 install ansible
-```
-
-
-### Executing Ansible ###
-You can either copy this cloned git files to the bastion server, or git clone it from the repository again. If you choose to do the latter then you will need to create .aws/config file again on the bastion server.
-
-Ansible has been configured to automatically determine the servers to deploy the cluster from EC2 tags. Tags were created during the Terraform step. The ansible assumes all servers with the tag defined in `ansible/inventory/axonops/aws_ec2.yml` file.
-
-The configurations for Cassandra are defined in `ansible/group_vars/tag_ClusterName_helios/*.yml`
-tag_ClusterName_axonops must match the key and value of the tag for the cluster.
-
-
-Follow the steps below to execute Ansible to deploy a Cassandra cluster
-
-1. Make sure passwordless SSH to target Cassandra servers are setup from the bastion
-2. Check the user has passwordless sudo on the target servers
-3. execute Ansible using the following set of commands:
-```
-source .aws/config
-cd ansible
-bash apache-cassandra-axonops.sh
-```
-
-
-
 ### Starting Cassandra ###
-Use the following command to start the cluster.
+Use the following command to start the cluster from the `ansible` folder.
 ```
-source .aws/config
-cd ansible
 bash start-cassandra.sh
 ```
