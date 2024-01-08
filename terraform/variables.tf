@@ -71,5 +71,9 @@ variable "worker_instance_type" {
   default     = "t3.xlarge"
   type        = string
   description = "Worker node instance type"
+}
 
+variable "CASSANDRA_CLUSTER_NAME" {
+  type        = string
+  description = "This is a variable for the required TF_VAR_CASSANDRA_CLUSTER_NAME environment variable."
 }

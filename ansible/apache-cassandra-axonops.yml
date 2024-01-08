@@ -39,7 +39,7 @@
       set_fact:
         cassandra_dc: "{{ ec2_tags['tags']['DC'] }}"
         cassandra_seeds: "{{ ec2_tags['tags']['Seeds'] | default('') }}"
-        cassandra_cluster_name: "{{ ec2_tags['tags']['ClusterName'] }}"
+        cassandra_cluster_name: "{{ lookup('env', 'TF_VAR_CASSANDRA_CLUSTER_NAME') }}"
         env: "{{ ec2_tags['tags']['Environment'] }}"
         cassandra_rack: "{{ _az.content }}"
 
