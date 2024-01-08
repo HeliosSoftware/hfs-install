@@ -97,7 +97,7 @@ resource "aws_instance" "cassandra_0" {
     Scalable    = "false"
     Role        = "cassandra"
     Project     = "Helios Reference Architecture"
-    ClusterName = "axonops"
+    ClusterName = var.CASSANDRA_CLUSTER_NAME
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20"
@@ -141,7 +141,7 @@ resource "aws_instance" "cassandra_1" {
     Scalable    = "false"
     Role        = "cassandra"
     Project     = "Helios Reference Architecture"
-    ClusterName = "axonops"
+    ClusterName = var.CASSANDRA_CLUSTER_NAME
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
@@ -186,7 +186,7 @@ resource "aws_instance" "cassandra_2" {
     Scalable    = "false"
     Role        = "cassandra"
     Project     = "Helios Reference Architecture"
-    ClusterName = "axonops"
+    ClusterName = var.CASSANDRA_CLUSTER_NAME
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
@@ -231,7 +231,7 @@ resource "aws_instance" "cassandra_3" {
     Scalable    = "false"
     Role        = "cassandra"
     Project     = "Helios Reference Architecture"
-    ClusterName = "axonops"
+    ClusterName = var.CASSANDRA_CLUSTER_NAME
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
@@ -276,7 +276,7 @@ resource "aws_instance" "cassandra_4" {
     Scalable    = "false"
     Role        = "cassandra"
     Project     = "Helios Reference Architecture"
-    ClusterName = "axonops"
+    ClusterName = var.CASSANDRA_CLUSTER_NAME
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"

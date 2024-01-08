@@ -4,13 +4,6 @@ keyed_groups:
   - key: tags
     prefix: tag
 
-regions:
-  - us-east-1
-
-filters:
-  tag:ClusterName:
-    - axonops
-
 strict_permissions: False
 hostnames:
   - private-ip-address
