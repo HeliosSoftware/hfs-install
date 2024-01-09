@@ -1,6 +1,6 @@
 ---
 - name: Deploy Cassandra
-  hosts: "{% if target_name is defined %}tag_Name_{{target_name |replace('-', '_')}}{% elif target_ip is defined %}{{target_ip}}{% else %}all{% endif %}"
+  hosts: "tag_ClusterName_{{ lookup('env', 'TF_VAR_CASSANDRA_CLUSTER_NAME') }}:&tag_ClusterName_{{ lookup('env', 'TF_VAR_ENVIRONMENT') }}"
   gather_facts: true
   become: true
   any_errors_fatal: true

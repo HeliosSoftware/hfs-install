@@ -34,6 +34,7 @@ resource "aws_instance" "bastion_server" {
   tags = {
     Name        = "Helios Bastion Server"
     Role        = "gateway"
+    Environment = var.ENVIRONMENT
   }
   availability_zone           = var.zone_1
   subnet_id                   = aws_subnet.public-subnet-1.id
@@ -101,7 +102,7 @@ resource "aws_instance" "cassandra_0" {
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20"
-    Environment = "Production"
+    Environment = var.ENVIRONMENT
   }
   lifecycle {
     ignore_changes = [
@@ -145,7 +146,7 @@ resource "aws_instance" "cassandra_1" {
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = "Production"
+    Environment = var.ENVIRONMENT
   }
   lifecycle {
     ignore_changes = [
@@ -190,7 +191,7 @@ resource "aws_instance" "cassandra_2" {
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = "Production"
+    Environment = var.ENVIRONMENT
   }
   lifecycle {
     ignore_changes = [
@@ -235,7 +236,7 @@ resource "aws_instance" "cassandra_3" {
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = "Production"
+    Environment = var.ENVIRONMENT
   }
   lifecycle {
     ignore_changes = [
@@ -280,7 +281,7 @@ resource "aws_instance" "cassandra_4" {
     DC          = "helios-dc"
     # Rack        = "rack1"
     Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = "Production"
+    Environment = var.ENVIRONMENT
   }
   lifecycle {
     ignore_changes = [

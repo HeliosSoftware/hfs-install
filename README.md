@@ -70,6 +70,7 @@ export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 export AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
 export ANSIBLE_HOST_KEY_CHECKING=false
 export TF_VAR_CASSANDRA_CLUSTER_NAME=helios
+export TF_VAR_ENVIRONMENT=Production
 ```
 4. Run `source ./.aws/config`
 5. Run `cd terraform`
