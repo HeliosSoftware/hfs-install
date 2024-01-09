@@ -68,6 +68,8 @@ There are two high level steps in this automation:
 export AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
 export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 export AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
+export AXONOPS_ORGANIZATION_NAME=<Your organization name you registered with https://axonops.com/>
+export AXONOPS_AGENT_KEY=<Your AxonOps Agent Key>
 export ANSIBLE_HOST_KEY_CHECKING=false
 export TF_VAR_CASSANDRA_CLUSTER_NAME=helios
 export TF_VAR_ENVIRONMENT=Production
