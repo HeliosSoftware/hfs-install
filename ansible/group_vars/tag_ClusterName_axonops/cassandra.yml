@@ -16,9 +16,9 @@ axon_agent_version: 1.0.57
 axon_java_agent_version: 1.0.0
 axon_agent_state: present
 axon_agent_server_host: "agents.axonops.cloud"
-axon_agent_customer_name: {{ lookup('env', 'AXONOPS_ORGANIZATION_NAME') }}
+axon_agent_customer_name: "{{ lookup('env', 'AXONOPS_ORGANIZATION_NAME') }}"
 axon_agent_server_port: 443
-axon_agent_key: {{ lookup('env', 'AXONOPS_ORGANIZATION_NAME') }}
+axon_agent_key: "{{ lookup('env', 'AXONOPS_ORGANIZATION_NAME') }}"
 axon_agent_tls_mode: TLS
 axon_agent_ntp_timeout: 8
 axon_agent_hostid: ''

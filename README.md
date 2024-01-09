@@ -35,20 +35,7 @@ This reference architecture consists of the following components:
       }
       ]
       }`
-  - Subnet
-  - Route Table
-  - Route Table Association
-  - Security Group
-  - Load Balancer (Application, Network, or Classic Load Balancer)
-  - Launch Configuration
-  - Auto Scaling Group
-  - Target Group (if using Application or Network Load Balancer)
-  - CloudWatch Alarm
-  - IAM Instance Profile
-  - IAM Role Policy
-  - Route 53 (optional)
-
-
+    
 ## Installation Overview
 There are two high level steps in this automation:
 
@@ -139,8 +126,11 @@ cd ansible
 bash apache-cassandra-axonops.sh
 ```
 
-### Starting Cassandra ###
+### Start Cassandra ###
 Use the following command to start the cluster from the `ansible` folder.
 ```
 bash start-cassandra.sh
 ```
+### Verify that your Cluster is Visible ###
+Login to your [AxonOps](https://axonops.com/) account and verify that your Cassandra Cluster is available.  Please be aware, this may take several minutes before all cluster nodes are visible in AxonOps.
+
