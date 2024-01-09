@@ -62,12 +62,12 @@ resource "aws_route_table" "helios-rt-public" {
   }
 }
 
-resource "aws_eip" "nat_gateway" {
-  vpc = true
+resource "aws_eip" "eip" {
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat_gateway" {
-  allocation_id = aws_eip.nat_gateway.id
+  allocation_id = aws_eip.eip.id
   subnet_id     = aws_subnet.public-subnet-1.id
 
   tags = {
@@ -113,46 +113,3 @@ resource "aws_route_table_association" "subnet_association-private-2" {
   route_table_id = aws_route_table.helios-rt-private.id
 }
 
-resource "aws_security_group" "all" {
-  name   = "Helios Security Group - All"
-  vpc_id = aws_vpc.helios-vpc.id
-
-  # Outbound access
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Allow SSH from within the VPC
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Allow ICMP within the VPC
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "icmp"
-    cidr_blocks = ["10.0.0.0/8"]
-  }
-
-  # Allow Any from within the VPC
-  ingress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
-  }
-
-}

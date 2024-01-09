@@ -37,7 +37,7 @@ resource "aws_instance" "bastion_server" {
   }
   availability_zone           = var.zone_1
   subnet_id                   = aws_subnet.public-subnet-1.id
-  vpc_security_group_ids      = [aws_security_group.all.id]
+  vpc_security_group_ids      = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id]
   private_ip                  = "10.0.1.10"
   associate_public_ip_address = true
   key_name                    = aws_key_pair.helios_local_key_pair.key_name
@@ -72,7 +72,7 @@ resource "aws_instance" "cassandra_0" {
   instance_type = "i4i.2xlarge"
   availability_zone      = var.zone_1
   subnet_id              = aws_subnet.private-subnet-1.id
-  vpc_security_group_ids = [aws_security_group.all.id]
+  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
   private_ip             = "10.0.3.20"
   key_name               = aws_key_pair.helios_generated_key_pair.key_name
   ebs_optimized          = true
@@ -116,7 +116,7 @@ resource "aws_instance" "cassandra_1" {
   instance_type = "i4i.2xlarge"
   availability_zone      = var.zone_1
   subnet_id              = aws_subnet.private-subnet-1.id
-  vpc_security_group_ids = [aws_security_group.all.id]
+  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
   private_ip             = "10.0.3.21"
   key_name               = aws_key_pair.helios_generated_key_pair.key_name
   ebs_optimized          = true
@@ -161,7 +161,7 @@ resource "aws_instance" "cassandra_2" {
   instance_type = "i4i.2xlarge"
   availability_zone      = var.zone_1
   subnet_id              = aws_subnet.private-subnet-1.id
-  vpc_security_group_ids = [aws_security_group.all.id]
+  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
   private_ip             = "10.0.3.22"
   key_name               = aws_key_pair.helios_generated_key_pair.key_name
   ebs_optimized          = true
@@ -206,7 +206,7 @@ resource "aws_instance" "cassandra_3" {
   instance_type = "i4i.2xlarge"
   availability_zone      = var.zone_2
   subnet_id              = aws_subnet.private-subnet-2.id
-  vpc_security_group_ids = [aws_security_group.all.id]
+  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
   private_ip             = "10.0.4.24"
   key_name               = aws_key_pair.helios_generated_key_pair.key_name
   ebs_optimized          = true
@@ -251,7 +251,7 @@ resource "aws_instance" "cassandra_4" {
   instance_type = "i4i.2xlarge"
   availability_zone      = var.zone_2
   subnet_id              = aws_subnet.private-subnet-2.id
-  vpc_security_group_ids = [aws_security_group.all.id]
+  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
   private_ip             = "10.0.4.25"
   key_name               = aws_key_pair.helios_generated_key_pair.key_name
   ebs_optimized          = true
