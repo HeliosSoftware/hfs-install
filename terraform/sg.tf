@@ -35,6 +35,24 @@ resource "aws_security_group" "allow_tls" {
   }
 }
 
+resource "aws_security_group" "allow_public_subnet_all" {
+  name          = "Helios Security Group - Allow Public Subnet All"
+  description   = "Allow all traffic on the public subnet for EKS and HFS"
+  vpc_id        = aws_vpc.helios-vpc.id
+
+  # Allow Any from within the public subnets
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = [var.public_subnet_1_cidr, var.public_subnet_2_cidr]
+  }
+
+  tags = {
+    Name = "allow_public_subnet_all"
+  }
+}
+
 resource "aws_security_group" "allow_private_subnet_all" {
   name          = "Helios Security Group - Allow Private Subnet All"
   description   = "Allow all traffic on the private subnet for Cassandra nodes"

@@ -11,7 +11,7 @@ resource "aws_eks_cluster" "helios-eks-cluster" {
   }
   tags = {
     Name        = "helios-eks-cluster"
-    Environment = "Production"
+    Environment = var.ENVIRONMENT
   }
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSClusterPolicy,
@@ -24,23 +24,19 @@ resource "aws_eks_cluster" "helios-eks-cluster" {
 resource "aws_eks_addon" "coredns" {
   cluster_name = aws_eks_cluster.helios-eks-cluster.name
   addon_name   = "coredns"
-  # resolve_conflicts_on_update = "PRESERVE"
 }
 
 resource "aws_eks_addon" "vpc-cni" {
   cluster_name = aws_eks_cluster.helios-eks-cluster.name
   addon_name   = "vpc-cni"
-  # resolve_conflicts_on_update = "PRESERVE"
 }
 
 resource "aws_eks_addon" "kube-proxy" {
   cluster_name = aws_eks_cluster.helios-eks-cluster.name
   addon_name   = "kube-proxy"
-  # resolve_conflicts_on_update = "PRESERVE"
 }
 
 resource "aws_eks_addon" "ebs-csi-driver" {
   cluster_name = aws_eks_cluster.helios-eks-cluster.name
   addon_name   = "aws-ebs-csi-driver"
-  # resolve_conflicts_on_update = "PRESERVE"
 }

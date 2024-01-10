@@ -59,6 +59,14 @@ echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
 chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
 chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub
 chmod 400 /home/ubuntu/.ssh/id_ed25519
+sudo apt --yes install unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.3/2023-11-14/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+mkdir -p /home/ubuntu/bin && cp ./kubectl /home/ubuntu/bin/kubectl && chown ubuntu:ubuntu /home/ubuntu/bin && chown ubuntu:ubuntu /home/ubuntu/bin/kubectl
+echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc
   EOF
   source_dest_check = false
   lifecycle {
@@ -111,184 +119,184 @@ resource "aws_instance" "cassandra_0" {
     ]
   }
 }
-
-resource "aws_instance" "cassandra_1" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "i4i.2xlarge"
-  availability_zone      = var.zone_1
-  subnet_id              = aws_subnet.private-subnet-1.id
-  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
-  private_ip             = "10.0.3.21"
-  key_name               = aws_key_pair.helios_generated_key_pair.key_name
-  ebs_optimized          = true
-  root_block_device {
-    delete_on_termination = true
-    encrypted = true
-    volume_size = 20
-    volume_type = "gp3"
-  }
-  ephemeral_block_device {
-    device_name = "/dev/sdc"
-    virtual_name = "ephemeral0"
-  }
-  metadata_options {
-    instance_metadata_tags = "enabled"
-    http_endpoint          = "enabled"
-  }
-  tags = {
-    Region      = var.region
-    Name        = "cassandra-1"
-    Disposable  = "false"
-    Scalable    = "false"
-    Role        = "cassandra"
-    Project     = "Helios Reference Architecture"
-    ClusterName = var.CASSANDRA_CLUSTER_NAME
-    DC          = "helios-dc"
-    # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = var.ENVIRONMENT
-  }
-  lifecycle {
-    ignore_changes = [
-      ami,
-      user_data
-    ]
-  }
-}
-
-
-resource "aws_instance" "cassandra_2" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "i4i.2xlarge"
-  availability_zone      = var.zone_1
-  subnet_id              = aws_subnet.private-subnet-1.id
-  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
-  private_ip             = "10.0.3.22"
-  key_name               = aws_key_pair.helios_generated_key_pair.key_name
-  ebs_optimized          = true
-  root_block_device {
-    delete_on_termination = true
-    encrypted = true
-    volume_size = 20
-    volume_type = "gp3"
-  }
-  ephemeral_block_device {
-    device_name = "/dev/sdc"
-    virtual_name = "ephemeral0"
-  }
-  metadata_options {
-    instance_metadata_tags = "enabled"
-    http_endpoint          = "enabled"
-  }
-  tags = {
-    Region      = var.region
-    Name        = "cassandra-2"
-    Disposable  = "false"
-    Scalable    = "false"
-    Role        = "cassandra"
-    Project     = "Helios Reference Architecture"
-    ClusterName = var.CASSANDRA_CLUSTER_NAME
-    DC          = "helios-dc"
-    # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = var.ENVIRONMENT
-  }
-  lifecycle {
-    ignore_changes = [
-      ami,
-      user_data
-    ]
-  }
-}
-
-
-resource "aws_instance" "cassandra_3" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "i4i.2xlarge"
-  availability_zone      = var.zone_2
-  subnet_id              = aws_subnet.private-subnet-2.id
-  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
-  private_ip             = "10.0.4.23"
-  key_name               = aws_key_pair.helios_generated_key_pair.key_name
-  ebs_optimized          = true
-  root_block_device {
-    delete_on_termination = true
-    encrypted = true
-    volume_size = 20
-    volume_type = "gp3"
-  }
-  ephemeral_block_device {
-    device_name = "/dev/sdc"
-    virtual_name = "ephemeral0"
-  }
-  metadata_options {
-    instance_metadata_tags = "enabled"
-    http_endpoint          = "enabled"
-  }
-  tags = {
-    Region      = var.region
-    Name        = "cassandra-3"
-    Disposable  = "false"
-    Scalable    = "false"
-    Role        = "cassandra"
-    Project     = "Helios Reference Architecture"
-    ClusterName = var.CASSANDRA_CLUSTER_NAME
-    DC          = "helios-dc"
-    # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = var.ENVIRONMENT
-  }
-  lifecycle {
-    ignore_changes = [
-      ami,
-      user_data
-    ]
-  }
-}
-
-
-resource "aws_instance" "cassandra_4" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "i4i.2xlarge"
-  availability_zone      = var.zone_2
-  subnet_id              = aws_subnet.private-subnet-2.id
-  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
-  private_ip             = "10.0.4.24"
-  key_name               = aws_key_pair.helios_generated_key_pair.key_name
-  ebs_optimized          = true
-  root_block_device {
-    delete_on_termination = true
-    encrypted = true
-    volume_size = 20
-    volume_type = "gp3"
-  }
-  ephemeral_block_device {
-    device_name = "/dev/sdc"
-    virtual_name = "ephemeral0"
-  }
-  metadata_options {
-    instance_metadata_tags = "enabled"
-    http_endpoint          = "enabled"
-  }
-  tags = {
-    Region      = var.region
-    Name        = "cassandra-4"
-    Disposable  = "false"
-    Scalable    = "false"
-    Role        = "cassandra"
-    Project     = "Helios Reference Architecture"
-    ClusterName = var.CASSANDRA_CLUSTER_NAME
-    DC          = "helios-dc"
-    # Rack        = "rack1"
-    Seeds       = "10.0.3.20,10.0.3.21"
-    Environment = var.ENVIRONMENT
-  }
-  lifecycle {
-    ignore_changes = [
-      ami,
-      user_data
-    ]
-  }
-}
-
-
+//
+//resource "aws_instance" "cassandra_1" {
+//  ami           = data.aws_ami.ubuntu.id
+//  instance_type = "i4i.2xlarge"
+//  availability_zone      = var.zone_1
+//  subnet_id              = aws_subnet.private-subnet-1.id
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  private_ip             = "10.0.3.21"
+//  key_name               = aws_key_pair.helios_generated_key_pair.key_name
+//  ebs_optimized          = true
+//  root_block_device {
+//    delete_on_termination = true
+//    encrypted = true
+//    volume_size = 20
+//    volume_type = "gp3"
+//  }
+//  ephemeral_block_device {
+//    device_name = "/dev/sdc"
+//    virtual_name = "ephemeral0"
+//  }
+//  metadata_options {
+//    instance_metadata_tags = "enabled"
+//    http_endpoint          = "enabled"
+//  }
+//  tags = {
+//    Region      = var.region
+//    Name        = "cassandra-1"
+//    Disposable  = "false"
+//    Scalable    = "false"
+//    Role        = "cassandra"
+//    Project     = "Helios Reference Architecture"
+//    ClusterName = var.CASSANDRA_CLUSTER_NAME
+//    DC          = "helios-dc"
+//    # Rack        = "rack1"
+//    Seeds       = "10.0.3.20,10.0.3.21"
+//    Environment = var.ENVIRONMENT
+//  }
+//  lifecycle {
+//    ignore_changes = [
+//      ami,
+//      user_data
+//    ]
+//  }
+//}
+//
+//
+//resource "aws_instance" "cassandra_2" {
+//  ami           = data.aws_ami.ubuntu.id
+//  instance_type = "i4i.2xlarge"
+//  availability_zone      = var.zone_1
+//  subnet_id              = aws_subnet.private-subnet-1.id
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  private_ip             = "10.0.3.22"
+//  key_name               = aws_key_pair.helios_generated_key_pair.key_name
+//  ebs_optimized          = true
+//  root_block_device {
+//    delete_on_termination = true
+//    encrypted = true
+//    volume_size = 20
+//    volume_type = "gp3"
+//  }
+//  ephemeral_block_device {
+//    device_name = "/dev/sdc"
+//    virtual_name = "ephemeral0"
+//  }
+//  metadata_options {
+//    instance_metadata_tags = "enabled"
+//    http_endpoint          = "enabled"
+//  }
+//  tags = {
+//    Region      = var.region
+//    Name        = "cassandra-2"
+//    Disposable  = "false"
+//    Scalable    = "false"
+//    Role        = "cassandra"
+//    Project     = "Helios Reference Architecture"
+//    ClusterName = var.CASSANDRA_CLUSTER_NAME
+//    DC          = "helios-dc"
+//    # Rack        = "rack1"
+//    Seeds       = "10.0.3.20,10.0.3.21"
+//    Environment = var.ENVIRONMENT
+//  }
+//  lifecycle {
+//    ignore_changes = [
+//      ami,
+//      user_data
+//    ]
+//  }
+//}
+//
+//
+//resource "aws_instance" "cassandra_3" {
+//  ami           = data.aws_ami.ubuntu.id
+//  instance_type = "i4i.2xlarge"
+//  availability_zone      = var.zone_2
+//  subnet_id              = aws_subnet.private-subnet-2.id
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  private_ip             = "10.0.4.23"
+//  key_name               = aws_key_pair.helios_generated_key_pair.key_name
+//  ebs_optimized          = true
+//  root_block_device {
+//    delete_on_termination = true
+//    encrypted = true
+//    volume_size = 20
+//    volume_type = "gp3"
+//  }
+//  ephemeral_block_device {
+//    device_name = "/dev/sdc"
+//    virtual_name = "ephemeral0"
+//  }
+//  metadata_options {
+//    instance_metadata_tags = "enabled"
+//    http_endpoint          = "enabled"
+//  }
+//  tags = {
+//    Region      = var.region
+//    Name        = "cassandra-3"
+//    Disposable  = "false"
+//    Scalable    = "false"
+//    Role        = "cassandra"
+//    Project     = "Helios Reference Architecture"
+//    ClusterName = var.CASSANDRA_CLUSTER_NAME
+//    DC          = "helios-dc"
+//    # Rack        = "rack1"
+//    Seeds       = "10.0.3.20,10.0.3.21"
+//    Environment = var.ENVIRONMENT
+//  }
+//  lifecycle {
+//    ignore_changes = [
+//      ami,
+//      user_data
+//    ]
+//  }
+//}
+//
+//
+//resource "aws_instance" "cassandra_4" {
+//  ami           = data.aws_ami.ubuntu.id
+//  instance_type = "i4i.2xlarge"
+//  availability_zone      = var.zone_2
+//  subnet_id              = aws_subnet.private-subnet-2.id
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  private_ip             = "10.0.4.24"
+//  key_name               = aws_key_pair.helios_generated_key_pair.key_name
+//  ebs_optimized          = true
+//  root_block_device {
+//    delete_on_termination = true
+//    encrypted = true
+//    volume_size = 20
+//    volume_type = "gp3"
+//  }
+//  ephemeral_block_device {
+//    device_name = "/dev/sdc"
+//    virtual_name = "ephemeral0"
+//  }
+//  metadata_options {
+//    instance_metadata_tags = "enabled"
+//    http_endpoint          = "enabled"
+//  }
+//  tags = {
+//    Region      = var.region
+//    Name        = "cassandra-4"
+//    Disposable  = "false"
+//    Scalable    = "false"
+//    Role        = "cassandra"
+//    Project     = "Helios Reference Architecture"
+//    ClusterName = var.CASSANDRA_CLUSTER_NAME
+//    DC          = "helios-dc"
+//    # Rack        = "rack1"
+//    Seeds       = "10.0.3.20,10.0.3.21"
+//    Environment = var.ENVIRONMENT
+//  }
+//  lifecycle {
+//    ignore_changes = [
+//      ami,
+//      user_data
+//    ]
+//  }
+//}
+//
+//
