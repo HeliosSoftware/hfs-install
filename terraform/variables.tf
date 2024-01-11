@@ -5,12 +5,6 @@ variable "customer" {
   default     = "helios-cassandra-poc"
 }
 
-variable "region" {
-  description = "AWS region to deploy to"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable "zone_1" {
   description = "First AWS zone to deploy to"
   type        = string
@@ -71,6 +65,11 @@ variable "worker_instance_type" {
   default     = "t3.xlarge"
   type        = string
   description = "Worker node instance type"
+}
+
+variable "AWS_DEFAULT_REGION" {
+  type        = string
+  description = "AWS region to deploy to.  This is a variable for the required TF_VAR_AWS_DEFAULT_REGION environment variable."
 }
 
 variable "CASSANDRA_CLUSTER_NAME" {

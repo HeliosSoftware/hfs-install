@@ -43,6 +43,7 @@ resource "aws_instance" "bastion_server" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.helios_local_key_pair.key_name
   ebs_optimized               = true
+  depends_on                  = [aws_eks_cluster.helios-eks-cluster]
   user_data = <<EOF
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
@@ -54,11 +55,6 @@ sudo apt --yes update
 sudo apt --yes install ansible
 sudo pip3 install boto3
 sudo pip3 install ansible
-echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
-echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519.pub
-chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
-chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub
-chmod 400 /home/ubuntu/.ssh/id_ed25519
 sudo apt --yes install unzip
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -67,6 +63,15 @@ curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.3/2023-11-14/bin/linu
 chmod +x ./kubectl
 mkdir -p /home/ubuntu/bin && cp ./kubectl /home/ubuntu/bin/kubectl && chown ubuntu:ubuntu /home/ubuntu/bin && chown ubuntu:ubuntu /home/ubuntu/bin/kubectl
 echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc
+aws eks update-kubeconfig --region '${var.AWS_DEFAULT_REGION}' --name '${aws_eks_cluster.helios-eks-cluster.name}' helios-eks-cluster
+git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu
+mkdir /home/ubuntu/hfs-install/.aws
+chown -R ubuntu:ubuntu /home/ubuntu/hfs-install
+echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
+echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519.pub
+chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
+chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub
+chmod 400 /home/ubuntu/.ssh/id_ed25519
   EOF
   source_dest_check = false
   lifecycle {
@@ -100,7 +105,7 @@ resource "aws_instance" "cassandra_0" {
     http_endpoint          = "enabled"
   }
   tags = {
-    Region      = var.region
+    Region      = var.AWS_DEFAULT_REGION
     Name        = "cassandra-0"
     Disposable  = "false"
     Scalable    = "false"
@@ -144,7 +149,7 @@ resource "aws_instance" "cassandra_0" {
 //    http_endpoint          = "enabled"
 //  }
 //  tags = {
-//    Region      = var.region
+//    Region      = var.AWS_DEFAULT_REGION
 //    Name        = "cassandra-1"
 //    Disposable  = "false"
 //    Scalable    = "false"
@@ -189,7 +194,7 @@ resource "aws_instance" "cassandra_0" {
 //    http_endpoint          = "enabled"
 //  }
 //  tags = {
-//    Region      = var.region
+//    Region      = var.AWS_DEFAULT_REGION
 //    Name        = "cassandra-2"
 //    Disposable  = "false"
 //    Scalable    = "false"
@@ -234,7 +239,7 @@ resource "aws_instance" "cassandra_0" {
 //    http_endpoint          = "enabled"
 //  }
 //  tags = {
-//    Region      = var.region
+//    Region      = var.AWS_DEFAULT_REGION
 //    Name        = "cassandra-3"
 //    Disposable  = "false"
 //    Scalable    = "false"
@@ -279,7 +284,7 @@ resource "aws_instance" "cassandra_0" {
 //    http_endpoint          = "enabled"
 //  }
 //  tags = {
-//    Region      = var.region
+//    Region      = var.AWS_DEFAULT_REGION
 //    Name        = "cassandra-4"
 //    Disposable  = "false"
 //    Scalable    = "false"

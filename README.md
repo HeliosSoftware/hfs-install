@@ -57,7 +57,7 @@ export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
 export AWS_DEFAULT_REGION=<AWS_DEFAULT_REGION>
 export AXONOPS_ORGANIZATION_NAME=<Your organization name you registered with https://axonops.com/>
 export AXONOPS_AGENT_KEY=<Your AxonOps Agent Key>
-export ANSIBLE_HOST_KEY_CHECKING=false
+export TF_VAR_AWS_DEFAULT_REGION=us-east-1
 export TF_VAR_CASSANDRA_CLUSTER_NAME=helios
 export TF_VAR_ENVIRONMENT=Production
 ```
@@ -75,7 +75,7 @@ The `variables.tf` file contains several variables that you may want to modify s
 
 Run `terraform apply`
 
-The provisioning will take a while but the command execution should show the progress.
+The provisioning will take a while (15 mins) but the command execution should show the progress.
 
 ### SSH to the Bastion Linux Instance ###
 
