@@ -14,9 +14,9 @@ resource "aws_eks_node_group" "worker-nodes" {
     source_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id]
   }
   scaling_config {
-    desired_size = 1
+    desired_size = 2
     max_size     = 5
-    min_size     = 1
+    min_size     = 2
   }
   update_config {
     max_unavailable = 1

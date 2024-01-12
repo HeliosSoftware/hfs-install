@@ -105,7 +105,7 @@ Use the following command to start the cluster from the `ansible` folder.
 ```
 bash start-cassandra.sh
 ```
-### Verify that your Cluster is Visible ###
+### Verify that your Cluster is Visible in AxonOps ###
 Login to your [AxonOps](https://axonops.com/) account and verify that your Cassandra Cluster is available.  Please be aware, this may take several minutes before all cluster nodes are visible in AxonOps.
 ### Common EKS Issue ###
 If in the AWS EKS Console, you're seeing the following error message:
@@ -113,5 +113,22 @@ If in the AWS EKS Console, you're seeing the following error message:
 `Your current IAM principal doesn't have access to Kubernetes objects on this cluster.
 This may be due to the current user or role not having Kubernetes RBAC permissions to describe cluster resources or not having an entry in the cluster’s auth config map.`
 
-Follow the instructions in this [StackOverflow page](https://stackoverflow.com/questions/70787520/your-current-user-or-role-does-not-have-access-to-kubernetes-objects-on-this-eks) to remedy.
+While logged in to the Bastion Linux instance, run the following command to enable `kubectl` commands.
 
+`aws eks update-kubeconfig --region $TF_VAR_AWS_DEFAULT_REGION --name helios-eks-cluster`
+
+Then, follow the instructions in this [StackOverflow page](https://stackoverflow.com/questions/70787520/your-current-user-or-role-does-not-have-access-to-kubernetes-objects-on-this-eks) to remedy.
+
+### Login To Your Helios FHIR Server Instance! ###
+There are three ways to locate the Loadbalancer URL for your cluster.
+- In the AWS Console, navigate to EKS > Clusters > helios-eks-cluster, then select Resources, then Service and networking, then Services.  Select helios-fhir-server.
+- In the AWS Console, navigate to EC2 > Load balancers, and selected the load balancer.
+- On the Bastion Linux instance, execute `kubectl get service -n helios-fhir-server`
+
+Your Load balancer URL will look something like this:
+
+`a83a8d424b4b5456295447ba4c2139f9-350762241.us-east-1.elb.amazonaws.com` (Yours will be different)
+
+Place that URL into a browser, and append `/ui` to access the Administrative User Interface.
+
+Appending `/fhir`to the Load balancer URL is the FHIR Server's root address. 

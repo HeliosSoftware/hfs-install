@@ -92,7 +92,6 @@ resource "kubernetes_deployment" "helios-fhir-server" {
             http_get {
               path = "/fhir/healthcheck"
               port = 8181
-              h
             }
             initial_delay_seconds = 600
             period_seconds = 60
@@ -129,10 +128,14 @@ resource "kubernetes_service" "helios-fhir-server" {
     namespace = kubernetes_namespace.helios-fhir-server.id
   }
   spec {
+    type = "LoadBalancer"
     port {
       protocol = "TCP"
-      port = 8181
-      target_port = "8181"
+      port = 80
+      target_port = 8181
+    }
+    selector = {
+      app = "helios-fhir-server"
     }
   }
 }
