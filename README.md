@@ -77,55 +77,29 @@ Run `terraform apply`
 
 The provisioning will take a while (15 mins) but the command execution should show the progress.
 
-### SSH to the Bastion Linux Instance ###
+### Upload your local .aws/config file and SSH to the Bastion Linux Instance ###
 
 The bastion public IP address can now be found in the AWS EC2 console named `Helios Bastion Server`.
 
-From your local machine, connect to the instance:
-
-`ssh ubuntu@[bastion ip address]`
-
+From your local machine, copy your local config file to the Bastion Linux Instance, then ssh to it:
+```
+cd ../.aws
+scp config ubuntu@[bastion ip address]:~/hfs-install/.aws/config
+ssh ubuntu@[bastion ip address]
+```
 Please NOTE:  It may take some time for the setup steps of the Bastion instance to complete.  The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance. 
-
-### Clone this Repository (again) ###
-
-From the Bastion Linux Instance, clone this repository.
-
-`git clone https://github.com/HeliosSoftware/hfs-install.git`
-
-Create the .aws directory 
-
-`mkdir hfs-install/.aws`
-
-### Copy your local .aws/config file to the Bastion Linux Instance ###
-
-Logout of the bastion linux instance, or use a new local terminal, and execute this next command on your local machine from the `hfs-install/.aws` directory:
-
-`logout`
-
-`cd ../.aws`
-
-`scp config ubuntu@[bastion ip address]:~/hfs-install/.aws/config`
-
-Connect again to the Bastion instance.
-
-`ssh ubuntu@[bastion ip address]`
 
 Verify that the .aws/config file is present and correct
 
 `cat hfs-install/.aws/config`
 
 ### Execute Cassandra Ansible Setup Scripts fom the Bastion Linux Instance ###
-
-`ssh ubuntu@[bastion ip address]`
-
 ```
 cd hfs-install
 source .aws/config
 cd ansible
 bash apache-cassandra-axonops.sh
 ```
-
 ### Start Cassandra ###
 Use the following command to start the cluster from the `ansible` folder.
 ```
@@ -133,4 +107,11 @@ bash start-cassandra.sh
 ```
 ### Verify that your Cluster is Visible ###
 Login to your [AxonOps](https://axonops.com/) account and verify that your Cassandra Cluster is available.  Please be aware, this may take several minutes before all cluster nodes are visible in AxonOps.
+### Common EKS Issue ###
+If in the AWS EKS Console, you're seeing the following error message:
+
+`Your current IAM principal doesn't have access to Kubernetes objects on this cluster.
+This may be due to the current user or role not having Kubernetes RBAC permissions to describe cluster resources or not having an entry in the cluster’s auth config map.`
+
+Follow the instructions in this [StackOverflow page](https://stackoverflow.com/questions/70787520/your-current-user-or-role-does-not-have-access-to-kubernetes-objects-on-this-eks) to remedy.
 

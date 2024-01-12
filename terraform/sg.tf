@@ -27,7 +27,6 @@ resource "aws_security_group" "allow_tls" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-
   }
 
   tags = {
@@ -70,40 +69,21 @@ resource "aws_security_group" "allow_private_subnet_all" {
     Name = "allow_private_subnet_all"
   }
 }
-//
-//resource "aws_security_group" "all" {
-//  name          = "Helios Security Group - All"
-//  description   = "Allow All Traffic"
-//  vpc_id = aws_vpc.helios-vpc.id
-//
-//  # Outbound access
-//  egress {
-//    from_port   = 0
-//    to_port     = 0
-//    protocol    = "-1"
-//    cidr_blocks = ["0.0.0.0/0"]
-//  }
-//  egress {
-//    from_port   = 0
-//    to_port     = 0
-//    protocol    = "icmp"
-//    cidr_blocks = ["0.0.0.0/0"]
-//  }
-//
-//  # Allow ICMP within the VPC
-//  ingress {
-//    from_port = 0
-//    to_port   = 0
-//    protocol  = "icmp"
-//    cidr_blocks = ["10.0.0.0/8"]
-//  }
-//
-//  # Allow Any from within the VPC
-//  ingress {
-//    from_port   = 0
-//    to_port     = 65535
-//    protocol    = "tcp"
-//    cidr_blocks = ["10.0.0.0/8"]
-//  }
-//
-//}
+
+resource "aws_security_group" "allow_cassandra" {
+  name          = "Helios Security Group - Allow Cassandra"
+  description   = "Allow Cassandra inbound traffic"
+  vpc_id        = aws_vpc.helios-vpc.id
+
+  # Allow 9042 into the private subnets
+  ingress {
+    from_port   = 9042
+    to_port     = 9042
+    protocol    = "tcp"
+    cidr_blocks = [var.public_subnet_1_cidr, var.public_subnet_2_cidr]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}

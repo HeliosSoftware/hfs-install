@@ -1,15 +1,3 @@
-//resource "aws_instance" "kubectl-server" {
-//  ami                         = data.aws_ami.ubuntu.id
-//  instance_type               = "t3.micro"
-//  subnet_id                   = aws_subnet.public-subnet-1.id
-//  vpc_security_group_ids      = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_public_subnet_all.id]
-//  key_name                    = aws_key_pair.helios_generated_key_pair.key_name
-//  tags = {
-//    Name = "kubectl-server"
-//    Environment = var.ENVIRONMENT
-//  }
-//}
-
 resource "aws_eks_node_group" "worker-nodes" {
   cluster_name    = aws_eks_cluster.helios-eks-cluster.name
   node_group_name = "worker-nodes"

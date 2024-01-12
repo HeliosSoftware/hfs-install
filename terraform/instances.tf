@@ -63,8 +63,8 @@ curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.3/2023-11-14/bin/linu
 chmod +x ./kubectl
 mkdir -p /home/ubuntu/bin && cp ./kubectl /home/ubuntu/bin/kubectl && chown ubuntu:ubuntu /home/ubuntu/bin && chown ubuntu:ubuntu /home/ubuntu/bin/kubectl
 echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc
-aws eks update-kubeconfig --region '${var.AWS_DEFAULT_REGION}' --name '${aws_eks_cluster.helios-eks-cluster.name}' helios-eks-cluster
-git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu
+aws eks update-kubeconfig --region '${var.AWS_DEFAULT_REGION}' --name '${aws_eks_cluster.helios-eks-cluster.name}'
+git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu/hfs-install
 mkdir /home/ubuntu/hfs-install/.aws
 chown -R ubuntu:ubuntu /home/ubuntu/hfs-install
 echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
@@ -86,7 +86,7 @@ resource "aws_instance" "cassandra_0" {
   instance_type = "i4i.2xlarge"
   availability_zone      = var.zone_1
   subnet_id              = aws_subnet.private-subnet-1.id
-  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id, aws_security_group.allow_cassandra.id]
   private_ip             = "10.0.3.20"
   key_name               = aws_key_pair.helios_generated_key_pair.key_name
   ebs_optimized          = true
@@ -130,7 +130,7 @@ resource "aws_instance" "cassandra_0" {
 //  instance_type = "i4i.2xlarge"
 //  availability_zone      = var.zone_1
 //  subnet_id              = aws_subnet.private-subnet-1.id
-//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id, aws_security_group.allow_cassandra.id]
 //  private_ip             = "10.0.3.21"
 //  key_name               = aws_key_pair.helios_generated_key_pair.key_name
 //  ebs_optimized          = true
@@ -175,7 +175,7 @@ resource "aws_instance" "cassandra_0" {
 //  instance_type = "i4i.2xlarge"
 //  availability_zone      = var.zone_1
 //  subnet_id              = aws_subnet.private-subnet-1.id
-//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id, aws_security_group.allow_cassandra.id]
 //  private_ip             = "10.0.3.22"
 //  key_name               = aws_key_pair.helios_generated_key_pair.key_name
 //  ebs_optimized          = true
@@ -220,7 +220,7 @@ resource "aws_instance" "cassandra_0" {
 //  instance_type = "i4i.2xlarge"
 //  availability_zone      = var.zone_2
 //  subnet_id              = aws_subnet.private-subnet-2.id
-//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id, aws_security_group.allow_cassandra.id]
 //  private_ip             = "10.0.4.23"
 //  key_name               = aws_key_pair.helios_generated_key_pair.key_name
 //  ebs_optimized          = true
@@ -265,7 +265,7 @@ resource "aws_instance" "cassandra_0" {
 //  instance_type = "i4i.2xlarge"
 //  availability_zone      = var.zone_2
 //  subnet_id              = aws_subnet.private-subnet-2.id
-//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id]
+//  vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id, aws_security_group.allow_cassandra.id]
 //  private_ip             = "10.0.4.24"
 //  key_name               = aws_key_pair.helios_generated_key_pair.key_name
 //  ebs_optimized          = true

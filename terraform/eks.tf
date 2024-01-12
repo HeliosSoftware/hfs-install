@@ -40,3 +40,99 @@ resource "aws_eks_addon" "ebs-csi-driver" {
   cluster_name = aws_eks_cluster.helios-eks-cluster.name
   addon_name   = "aws-ebs-csi-driver"
 }
+
+data "aws_eks_cluster_auth" "helios-eks-cluster" {
+  name = "helios-eks-cluster"
+}
+
+provider "kubernetes" {
+  host                   = aws_eks_cluster.helios-eks-cluster.endpoint
+  token                  = data.aws_eks_cluster_auth.helios-eks-cluster.token
+  cluster_ca_certificate = base64decode(aws_eks_cluster.helios-eks-cluster.certificate_authority.0.data)
+}
+
+resource "kubernetes_namespace" "helios-fhir-server" {
+  metadata {
+    name = "helios-fhir-server"
+  }
+}
+
+resource "kubernetes_deployment" "helios-fhir-server" {
+  metadata {
+    name = "helios-fhir-server"
+    namespace = kubernetes_namespace.helios-fhir-server.id
+  }
+  spec {
+    replicas = 2
+    selector {match_labels = {app = "helios-fhir-server"}}
+    template {
+      metadata {labels = {app =  "helios-fhir-server"}}
+      spec {
+        affinity {
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              node_selector_term {
+                match_expressions {
+                  key = "kubernetes.io/arch"
+                  operator = "In"
+                  values = ["amd64"]
+                }
+              }
+            }
+          }
+        }
+        container {
+          name = "helios-fhir-server"
+          image = "gcr.io/helios-fhir-server/enterprise-edition:latest"
+          port {
+            container_port = 8181
+          }
+          image_pull_policy = "IfNotPresent"
+          liveness_probe {
+            http_get {
+              path = "/fhir/healthcheck"
+              port = 8181
+              h
+            }
+            initial_delay_seconds = 600
+            period_seconds = 60
+          }
+          env {
+            name = "CASSANDRA_PROPERTIES_PORT"
+            value = "9042"
+          }
+          env {
+            name = "CASSANDRA_PROPERTIES_CONTACTPOINTS"
+            value = "10.0.3.20"
+          }
+          env {
+            name = "CASSANDRA_PROPERTIES_DATACENTER"
+            value = "helios-dc"
+          }
+          env {
+            name = "CASSANDRA_PROPERTIES_USERNAME"
+            value = "cassandra"
+          }
+          env {
+            name = "CASSANDRA_PROPERTIES_PASSWORD"
+            value = "cassandra"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "helios-fhir-server" {
+  metadata {
+    name = "helios-fhir-server"
+    namespace = kubernetes_namespace.helios-fhir-server.id
+  }
+  spec {
+    port {
+      protocol = "TCP"
+      port = 8181
+      target_port = "8181"
+    }
+  }
+}
