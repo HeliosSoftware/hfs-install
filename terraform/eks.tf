@@ -88,13 +88,21 @@ resource "kubernetes_deployment" "helios-fhir-server" {
             container_port = 8181
           }
           image_pull_policy = "IfNotPresent"
+          startup_probe {
+            http_get {
+              path = "/fhir/healthcheck"
+              port = 8181
+            }
+            failure_threshold = 30
+            period_seconds = 10
+          }
           liveness_probe {
             http_get {
               path = "/fhir/healthcheck"
               port = 8181
             }
-            initial_delay_seconds = 600
-            period_seconds = 60
+            failure_threshold = 1
+            period_seconds = 10
           }
           env {
             name = "CASSANDRA_PROPERTIES_PORT"
@@ -102,7 +110,7 @@ resource "kubernetes_deployment" "helios-fhir-server" {
           }
           env {
             name = "CASSANDRA_PROPERTIES_CONTACTPOINTS"
-            value = "10.0.3.20"
+            value = "10.0.3.20,10.0.4.23"
           }
           env {
             name = "CASSANDRA_PROPERTIES_DATACENTER"

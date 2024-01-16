@@ -35,7 +35,8 @@ This reference architecture consists of the following components:
       }
       ]
       }`
-    
+- Signup for an [AxonOps](https://axonops.com/) account and obtain an Agent Key. 
+
 ## Installation Overview
 There are two high level steps in this automation:
 
@@ -76,6 +77,8 @@ The `variables.tf` file contains several variables that you may want to modify s
 Run `terraform apply`
 
 The provisioning will take a while (15 mins) but the command execution should show the progress.
+
+While this command runs, you may proceed with the next step in another terminal if the Bastion Linux instance has been created and is ready.
 
 ### Upload your local .aws/config file and SSH to the Bastion Linux Instance ###
 
