@@ -117,7 +117,7 @@ This may be due to the current user or role not having Kubernetes RBAC permissio
 
 While logged in to the Bastion Linux instance, run the following command to enable `kubectl` commands.
 
-`aws eks update-kubeconfig --region $TF_VAR_AWS_DEFAULT_REGION --name helios-eks-cluster`
+`aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name helios-eks-cluster`
 
 Then, follow the instructions in this [StackOverflow page](https://stackoverflow.com/questions/70787520/your-current-user-or-role-does-not-have-access-to-kubernetes-objects-on-this-eks) to remedy.
 
