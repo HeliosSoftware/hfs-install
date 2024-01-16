@@ -134,3 +134,8 @@ Your Load balancer URL will look something like this:
 Place that URL into a browser, and append `/ui` to access the Administrative User Interface.
 
 Appending `/fhir`to the Load balancer URL is the FHIR Server's root address. 
+
+### Cleanup ###
+To remove all created AWS resources, run the following command on your local machine in the `terraform` folder:
+
+`terraform destroy`
