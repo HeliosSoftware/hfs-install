@@ -25,48 +25,10 @@ resource "aws_eks_node_group" "worker-nodes" {
     role = "Helios-FHIR-Server"
     env = var.ENVIRONMENT
   }
-
-
-  # taint {
-  #   key    = "team"
-  #   value  = "devops"
-  #   effect = "NO_SCHEDULE"
-  # }
-
-  # launch_template {
-  #   name    = aws_launch_template.eks-worker_node_launch_template.name
-  #   version = aws_launch_template.eks-worker_node_launch_template.latest_version
-  # }
-
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
+    aws_eks_cluster.helios-eks-cluster
   ]
 }
-
-# resource "aws_launch_template" "eks-worker_node_launch_template" {
-#   name = "eks-worker_node_launch_template"
-#   instance_type = "t3.xlarge"
-#   block_device_mappings {
-#     ebs {
-#       volume_size = 60
-#       volume_type = "gp3"
-#     }
-#   }
-# }
-
-# resource "aws_launch_template" "eks-with-disks" {
-#   name = "eks-with-disks"
-
-#   key_name = "local-provisioner"
-
-#   block_device_mappings {
-#     device_name = "/dev/xvdb"
-
-#     ebs {
-#       volume_size = 50
-#       volume_type = "gp2"
-#     }
-#   }
-# }

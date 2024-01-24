@@ -87,17 +87,17 @@ When you see the following line in the log, the Bastion Linux Instance is ready 
 
 The bastion public IP address can now be found in the AWS EC2 console named `Helios Bastion Server`.
 
+> [!NOTE]
+> It may take some time for the setup steps of the Bastion instance to complete.  The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance.
+> Verify that the .aws/config file is present and correct
+> `cat hfs-install/.aws/config`
+
 From your local machine, copy your local config file to the Bastion Linux Instance, then ssh to it:
 ```
 cd ../.aws
 scp config ubuntu@[bastion ip address]:~/hfs-install/.aws/config
 ssh ubuntu@[bastion ip address]
 ```
-Please NOTE:  It may take some time for the setup steps of the Bastion instance to complete.  The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance. 
-
-Verify that the .aws/config file is present and correct
-
-`cat hfs-install/.aws/config`
 
 ### Execute Cassandra Ansible Setup Scripts fom the Bastion Linux Instance ###
 ```

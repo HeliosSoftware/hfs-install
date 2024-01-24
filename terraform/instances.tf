@@ -43,7 +43,7 @@ resource "aws_instance" "bastion_server" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.helios_local_key_pair.key_name
   ebs_optimized               = true
-  depends_on                  = [aws_instance.cassandra_4]
+  depends_on                  = [aws_eks_cluster.helios-eks-cluster]
   user_data = <<EOF
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
