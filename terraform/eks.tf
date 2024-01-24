@@ -18,6 +18,7 @@ resource "aws_eks_cluster" "helios-eks-cluster" {
     aws_iam_role_policy_attachment.AmazonEKSServicePolicy,
     aws_iam_role_policy_attachment.AmazonEKSVPCResourceController,
     aws_iam_role_policy_attachment.AmazonEKSVPCResourceController,
+    aws_instance.bastion_server
   ]
 }
 

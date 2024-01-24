@@ -78,7 +78,10 @@ Run `terraform apply`
 
 The provisioning will take a while (15 mins) but the command execution should show the progress.
 
-While this command runs, you may proceed with the next step in another terminal if the Bastion Linux instance has been created and is ready.
+While this command runs, you can proceed with the next step in another terminal if the Bastion Linux instance has been created and is ready.
+When you see the following line in the log, the Bastion Linux Instance is ready and you can SSH to it as described in the next step.
+
+`HECTOR TODO - ADD LINE`
 
 ### Upload your local .aws/config file and SSH to the Bastion Linux Instance ###
 
