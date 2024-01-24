@@ -78,18 +78,24 @@ Run `terraform apply`
 
 The provisioning will take a while (15 mins) but the command execution should show the progress.
 
-While this command runs, you can proceed with the next step in another terminal if the Bastion Linux instance has been created and is ready.
-When you see the following line in the log, the Bastion Linux Instance is ready and you can SSH to it as described in the next step.
-
-`HECTOR TODO - ADD LINE`
+> [!TIP]
+> While this command runs, you can proceed with the next step in another terminal if the Bastion Linux instance has been created and is ready.
+> 
+> When you see the following line in the log, the Bastion Linux Instance is ready and you can SSH to it as described in the next step.
+> 
+> `aws_instance.bastion_server: Creation complete after 14s [id=i-0309d9022f8f4c933]`  (Your id will be different)
 
 ### Upload your local .aws/config file and SSH to the Bastion Linux Instance ###
 
 The bastion public IP address can now be found in the AWS EC2 console named `Helios Bastion Server`.
 
 > [!NOTE]
-> It may take some time for the setup steps of the Bastion instance to complete.  The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance.
-> Verify that the .aws/config file is present and correct
+> It may take some time for the setup steps of the Bastion instance to complete.
+> 
+> The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance.
+> 
+> Verify that the .aws/config file is present and correct with this command:
+> 
 > `cat hfs-install/.aws/config`
 
 From your local machine, copy your local config file to the Bastion Linux Instance, then ssh to it:
