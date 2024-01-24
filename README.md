@@ -60,6 +60,7 @@ export AXONOPS_ORGANIZATION_NAME=<Your organization name you registered with htt
 export AXONOPS_AGENT_KEY=<Your AxonOps Agent Key>
 export TF_VAR_CASSANDRA_CLUSTER_NAME=helios
 export TF_VAR_ENVIRONMENT=Production
+export TF_VAR_AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
 ```
 4. Run `source ./.aws/config`
 5. Run `cd terraform`
