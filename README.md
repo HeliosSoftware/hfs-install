@@ -40,8 +40,8 @@ This reference architecture consists of the following components:
 ## Installation Overview
 There are two high level steps in this automation:
 
-1. Use Terraform to provision the resources in the `terraform` folder.
-2. SSH to the Bastion Linux instance and run Ansible automation to provision Cassandra cluster on the Linux hosts provisioned in step 1.
+1. Prepare your config file
+2. Use Terraform to provision the resources in the `terraform` folder.
 
 ## Installation Steps
 
@@ -78,45 +78,6 @@ Run `terraform apply`
 
 The provisioning will take a while (15 mins) but the command execution should show the progress.
 
-> [!TIP]
-> While this command runs, you can proceed with the next step in another terminal if the Bastion Linux instance has been created and is ready.
-> 
-> When you see the following line in the log, the Bastion Linux Instance is ready and you can SSH to it as described in the next step.
-> 
-> `aws_instance.bastion_server: Creation complete after 14s [id=i-0309d9022f8f4c933]`  (Your id will be different)
-
-### Upload your local .aws/config file and SSH to the Bastion Linux Instance ###
-
-The bastion public IP address can now be found in the AWS EC2 console named `Helios Bastion Server`.
-
-> [!NOTE]
-> It may take some time for the setup steps of the Bastion instance to complete.
-> 
-> The steps will be complete when the `/home/ubuntu/.ssh/id_ed25519` is available on the Bastion instance.
-> 
-> Verify that the .aws/config file is present and correct with this command:
-> 
-> `cat hfs-install/.aws/config`
-
-From your local machine, copy your local config file to the Bastion Linux Instance, then ssh to it:
-```
-cd ../.aws
-scp config ubuntu@[bastion ip address]:~/hfs-install/.aws/config
-ssh ubuntu@[bastion ip address]
-```
-
-### Execute Cassandra Ansible Setup Scripts fom the Bastion Linux Instance ###
-```
-cd hfs-install
-source .aws/config
-cd ansible
-bash apache-cassandra-axonops.sh
-```
-### Start Cassandra ###
-Use the following command to start the cluster from the `ansible` folder.
-```
-bash start-cassandra.sh
-```
 ### Verify that your Cluster is Visible in AxonOps ###
 Login to your [AxonOps](https://axonops.com/) account and verify that your Cassandra Cluster is available.  Please be aware, this may take several minutes before all cluster nodes are visible in AxonOps.
 ### Common EKS Issue ###
@@ -125,9 +86,9 @@ If in the AWS EKS Console, you're seeing the following error message:
 `Your current IAM principal doesn't have access to Kubernetes objects on this cluster.
 This may be due to the current user or role not having Kubernetes RBAC permissions to describe cluster resources or not having an entry in the cluster’s auth config map.`
 
-While logged in to the Bastion Linux instance, run the following command to enable `kubectl` commands.
+SSH to the Bastion Linux instance.  
 
-`aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name helios-eks-cluster`
+`ssh ubuntu@[bastion linux ip]`
 
 Then, follow the instructions in this [StackOverflow page](https://stackoverflow.com/questions/70787520/your-current-user-or-role-does-not-have-access-to-kubernetes-objects-on-this-eks) to remedy.
 
@@ -149,3 +110,14 @@ Appending `/fhir`to the Load balancer URL is the FHIR Server's root address.
 To remove all created AWS resources, run the following command on your local machine in the `terraform` folder:
 
 `terraform destroy`
+
+Should you see the following error:
+
+`Error: context deadline exceeded`
+
+Run `terraform destroy` again.
+
+
+
+
+

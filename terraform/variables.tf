@@ -1,8 +1,14 @@
 
-variable "customer" {
-  description = "The name of the customer"
+variable "zone_name" {
+  description = "The Route 53 zone domain name to deploy to"
   type        = string
-  default     = "helios-cassandra-poc"
+  default     = "heliossoftware.com"
+}
+
+variable "host_name" {
+  description = "The host name within the above zone."
+  type        = string
+  default     = "r4"
 }
 
 variable "zone_1" {
@@ -21,6 +27,12 @@ variable "local_ssh_public_key" {
   description = "Public key to access the bastion server.  Either ~/.ssh/id_rsa.pub or ~/.ssh/id_ed25519.pub"
   type        = string
   default     = "~/.ssh/id_ed25519.pub"
+}
+
+variable "local_ssh_private_key" {
+  description = "Public key to access the bastion server.  Either ~/.ssh/id_rsa or ~/.ssh/id_ed25519"
+  type        = string
+  default     = "~/.ssh/id_ed25519"
 }
 
 variable "public_subnet_cidr" {

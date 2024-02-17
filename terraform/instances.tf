@@ -43,45 +43,103 @@ resource "aws_instance" "bastion_server" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.helios_local_key_pair.key_name
   ebs_optimized               = true
-  depends_on                  = [aws_eks_cluster.helios-eks-cluster]
-  user_data = <<EOF
-#!/bin/bash
-export DEBIAN_FRONTEND=noninteractive
-sudo apt-get update
-sudo apt-get -y install python3-pip
-sudo apt-get -y install pipenv
-sudo apt-add-repository -y ppa:ansible/ansible
-sudo apt --yes update
-sudo apt --yes install ansible
-sudo pip3 install boto3
-sudo pip3 install ansible
-sudo apt --yes install unzip
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.3/2023-11-14/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-mkdir -p /home/ubuntu/bin && cp ./kubectl /home/ubuntu/bin/kubectl && chown ubuntu:ubuntu /home/ubuntu/bin && chown ubuntu:ubuntu /home/ubuntu/bin/kubectl
-echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc
-echo 'aws eks update-kubeconfig --region ${var.AWS_DEFAULT_REGION} --name ${aws_eks_cluster.helios-eks-cluster.name}' >> /home/ubuntu/.bashrc
-git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu/hfs-install
-mkdir /home/ubuntu/hfs-install/.aws
-chown -R ubuntu:ubuntu /home/ubuntu/hfs-install
-echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
-echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519.pub
-chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
-chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub
-chmod 400 /home/ubuntu/.ssh/id_ed25519
-  EOF
+  depends_on                  = [aws_instance.cassandra_0, aws_instance.cassandra_1, aws_instance.cassandra_2]
+//  user_data = <<EOF
+//#!/bin/bash
+//export DEBIAN_FRONTEND=noninteractive
+//sudo apt-get update
+//sudo apt-get -y install python3-pip
+//sudo apt-get -y install pipenv
+//sudo apt-add-repository -y ppa:ansible/ansible
+//sudo apt --yes update
+//sudo apt --yes install ansible
+//sudo pip3 install boto3
+//sudo pip3 install ansible
+//sudo apt --yes install unzip
+//curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+//unzip awscliv2.zip
+//sudo ./aws/install
+//curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.3/2023-11-14/bin/linux/amd64/kubectl
+//chmod +x ./kubectl
+//mkdir -p /home/ubuntu/bin && cp ./kubectl /home/ubuntu/bin/kubectl && chown ubuntu:ubuntu /home/ubuntu/bin && chown ubuntu:ubuntu /home/ubuntu/bin/kubectl
+//echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc
+//echo 'aws eks update-kubeconfig --region ${var.AWS_DEFAULT_REGION} --name ${aws_eks_cluster.helios-eks-cluster.name}' >> /home/ubuntu/.bashrc
+//git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu/hfs-install
+//mkdir /home/ubuntu/hfs-install/.aws
+//chown -R ubuntu:ubuntu /home/ubuntu/hfs-install
+//echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519
+//echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519.pub
+//chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519
+//chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub
+//chmod 400 /home/ubuntu/.ssh/id_ed25519
+//  EOF
   source_dest_check = false
   lifecycle {
     ignore_changes = [
       ami
     ]
   }
+  provisioner "remote-exec" {
+    inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
+      "sudo apt-get update",
+      "sudo apt-get -y install python3-pip",
+      "sudo apt-get -y install pipenv",
+      "sudo apt-add-repository -y ppa:ansible/ansible",
+      "sudo apt --yes update",
+      "sudo apt --yes install ansible",
+      "sudo pip3 install boto3",
+      "sudo pip3 install ansible",
+      "sudo apt --yes install unzip",
+      "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip",
+      "unzip awscliv2.zip",
+      "sudo ./aws/install",
+      "curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.28.3/2023-11-14/bin/linux/amd64/kubectl",
+      "chmod +x ./kubectl",
+      "mkdir -p /home/ubuntu/bin && cp ./kubectl /home/ubuntu/bin/kubectl && chown ubuntu:ubuntu /home/ubuntu/bin && chown ubuntu:ubuntu /home/ubuntu/bin/kubectl",
+      "echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc",
+      "echo 'source /home/ubuntu/hfs-install/.aws/config' >> /home/ubuntu/.bashrc",
+      "echo 'aws eks update-kubeconfig --region ${var.AWS_DEFAULT_REGION} --name ${aws_eks_cluster.helios-eks-cluster.name}' >> /home/ubuntu/.bashrc",
+      "git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu/hfs-install",
+      "mkdir /home/ubuntu/hfs-install/.aws",
+      "chown -R ubuntu:ubuntu /home/ubuntu/hfs-install",
+      "echo '${tls_private_key.ssh.private_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519",
+      "echo '${tls_private_key.ssh.public_key_openssh}' >> /home/ubuntu/.ssh/id_ed25519.pub",
+      "chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519",
+      "chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub",
+      "chmod 400 /home/ubuntu/.ssh/id_ed25519"
+    ]
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      host = self.public_ip
+      private_key = file(var.local_ssh_private_key)
+    }
+  }
   provisioner "file" {
     source      = "../.aws/config"
-    destination = "hfs-install/.aws/"
+    destination = "/home/ubuntu/hfs-install/.aws/config"
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      host = self.public_ip
+      private_key = file(var.local_ssh_private_key)
+    }
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "cd hfs-install",
+      "source .aws/config",
+      "cd ansible",
+      "bash apache-cassandra-axonops.sh",
+      "bash start-cassandra.sh"
+    ]
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      host = self.public_ip
+      private_key = file(var.local_ssh_private_key)
+    }
   }
 }
 
@@ -176,7 +234,7 @@ resource "aws_instance" "cassandra_1" {
 resource "aws_instance" "cassandra_2" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "i4i.2xlarge"
-  availability_zone      = var.zone_1
+  availability_zone      = var.zone_2
   subnet_id              = aws_subnet.private-subnet-2.id
   vpc_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id, aws_security_group.allow_private_subnet_all.id, aws_security_group.allow_cassandra.id]
   private_ip             = "10.0.4.22"

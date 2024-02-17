@@ -19,6 +19,10 @@ resource "aws_eks_cluster" "helios-eks-cluster" {
     aws_iam_role_policy_attachment.AmazonEKSVPCResourceController,
     aws_iam_role_policy_attachment.AmazonEKSVPCResourceController
   ]
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -110,7 +114,7 @@ resource "kubernetes_deployment" "helios-fhir-server" {
           }
           env {
             name = "CASSANDRA_PROPERTIES_CONTACTPOINTS"
-            value = "10.0.3.20,10.0.4.23"
+            value = "10.0.3.20,10.0.4.22"
           }
           env {
             name = "CASSANDRA_PROPERTIES_DATACENTER"
@@ -128,6 +132,7 @@ resource "kubernetes_deployment" "helios-fhir-server" {
       }
     }
   }
+  wait_for_rollout = false
 }
 
 resource "kubernetes_service" "helios-fhir-server" {
