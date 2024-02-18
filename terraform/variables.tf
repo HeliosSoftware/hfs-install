@@ -1,16 +1,4 @@
 
-variable "zone_name" {
-  description = "The Route 53 zone domain name to deploy to"
-  type        = string
-  default     = "heliossoftware.com"
-}
-
-variable "host_name" {
-  description = "The host name within the above zone."
-  type        = string
-  default     = "r4"
-}
-
 variable "zone_1" {
   description = "First AWS zone to deploy to"
   type        = string
@@ -92,4 +80,22 @@ variable "CASSANDRA_CLUSTER_NAME" {
 variable "ENVIRONMENT" {
   type        = string
   description = "This is a variable for the required TF_VAR_ENVIRONMENT environment variable. e.g. Production, Testing, Development"
+}
+
+variable "route54_hostname_enabled" {
+  description = "Set to true to enable a Route 53 hostname - defaults to r4.heliossoftware.com"
+  type        = bool
+  default     = false
+}
+
+variable "zone_name" {
+  description = "The Route 53 zone domain name to deploy to"
+  type        = string
+  default     = "heliossoftware.com"
+}
+
+variable "host_name" {
+  description = "The host name within the above zone."
+  type        = string
+  default     = "r4"
 }

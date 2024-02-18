@@ -23,6 +23,7 @@ This reference architecture consists of the following components:
   - VPC - AmazonVPCFullAccess
   - EC2 - AmazonEC2FullAccess
   - IAM Role - IAMFullAccess
+  - Route 53 - AmazonRoute53FullAccess
   - EKS - You will need to add a custom policy named EKS-Full-Access
     - `{
       "Version": "2012-10-17",
@@ -40,7 +41,7 @@ This reference architecture consists of the following components:
 ## Installation Overview
 There are two high level steps in this automation:
 
-1. Prepare your config file
+1. Prepare your config file.
 2. Use Terraform to provision the resources in the `terraform` folder.
 
 ## Installation Steps
@@ -104,7 +105,16 @@ Your Load balancer URL will look something like this:
 
 Place that URL into a browser, and append `/ui` to access the Administrative User Interface.
 
-Appending `/fhir`to the Load balancer URL is the FHIR Server's root address. 
+Appending `/fhir`to the Load balancer URL is the FHIR Server's root address.
+
+### Optional - Setup A DNS Record
+Should you wish to have a hostname reference your endpoint, in `variables.tf`, change:
+
+- `route54_hostname_enabled.default` to `true`
+- `zone_name` to your domain name, assuming you use Route 53 for DNS
+- `host_name` to a hostname of your choice.
+
+Run `terraform apply`
 
 ### Cleanup ###
 To remove all created AWS resources, run the following command on your local machine in the `terraform` folder:
