@@ -1,15 +1,15 @@
 # Helios FHIR Server AWS Reference Architecture
 
 ## Introduction
-This document provides recommended practices and a comprehensive setup instructions for a reference architecture for the Helios FHIR Server on AWS.
+This document provides recommended practices and a comprehensive set of setup instructions for a reference architecture for the Helios FHIR Server on AWS.
 
 ## Reference Architecture
 This reference architecture consists of the following components:
 - An Amazon Virtual Private Cloud (helios-vpc)
 - Public and private subnets across two different availability zones for a total of 4 subnets.
-- A bastion Linux instance used to provide secure access to Linux instances located in the private and public subnets of your virtual private cloud.  SSH to this instance to perform initial Cassandra cluster installation tasks, and occasional maintenance as required.
+- A bastion Linux instance used to provide secure access to Linux instances located in the private and public subnets of your virtual private cloud.  SSH to this instance to perform occasional maintenance as required.
 - Configuration for using [AxonOps](https://axonops.com/) - a cloud native solution to monitor, maintain and backup your Cassandra cluster.
-- A 5-node Cassandra Cluster with nodes spread across two availability zones.
+- A 3-node Cassandra Cluster with nodes spread across two availability zones.
 - Helios FHIR Server installed in an Amazon EKS Cluster and configured for auto-scaling.
 - IAM Roles and Policies
 - Security Groups
@@ -77,7 +77,7 @@ The `variables.tf` file contains several variables that you may want to modify s
 
 Run `terraform apply`
 
-The provisioning will take a while (15 mins) but the command execution should show the progress.
+The provisioning will take a while (15 mins +) but the command execution should show the progress.
 
 ### Verify that your Cluster is Visible in AxonOps ###
 Login to your [AxonOps](https://axonops.com/) account and verify that your Cassandra Cluster is available.  Please be aware, this may take several minutes before all cluster nodes are visible in AxonOps.
@@ -106,15 +106,6 @@ Your Load balancer URL will look something like this:
 Place that URL into a browser, and append `/ui` to access the Administrative User Interface.
 
 Appending `/fhir`to the Load balancer URL is the FHIR Server's root address.
-
-### Optional - Setup A DNS Record
-Should you wish to have a hostname reference your endpoint, in `variables.tf`, change:
-
-- `route54_hostname_enabled.default` to `true`
-- `zone_name` to your domain name, assuming you use Route 53 for DNS
-- `host_name` to a hostname of your choice.
-
-Run `terraform apply`
 
 ### Cleanup ###
 To remove all created AWS resources, run the following command on your local machine in the `terraform` folder:
