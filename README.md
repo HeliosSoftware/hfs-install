@@ -101,7 +101,7 @@ There are three ways to locate the Loadbalancer URL for your cluster.
 
 Your Load balancer URL will look something like this:
 
-`a83a8d424b4b5456295447ba4c2139f9-350762241.us-east-1.elb.amazonaws.com` (Yours will be different)
+`https://a83a8d424b4b5456295447ba4c2139f9-350762241.us-east-1.elb.amazonaws.com` (Yours will be different)
 
 Place that URL into a browser, and append `/ui` to access the Administrative User Interface.
 
