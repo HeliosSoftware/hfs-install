@@ -118,6 +118,11 @@ Should you see the following error:
 
 Run `terraform destroy` again.
 
+### How To SSH To a Helios FHIR Server Instance ###
+- ssh to the Bastion Linux instance
+- Obtain a list of Pods:  `kubectl get pods -A -o wide`
+- Choose a Helios FHIR Server pod instance and SSH into it:  `kubectl exec -it [pod name] -c helios-fhir-server -n helios-fhir-server -- /bin/bash`
+
 
 
 
