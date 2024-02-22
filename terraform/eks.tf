@@ -144,7 +144,7 @@ resource "kubernetes_service" "helios-fhir-server" {
     type = "LoadBalancer"
     port {
       protocol = "TCP"
-      port = 443
+      port = 80
       target_port = 8181
     }
     selector = {
