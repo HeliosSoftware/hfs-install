@@ -99,3 +99,9 @@ variable "host_name" {
   type        = string
   default     = "r4"
 }
+
+variable "require_tls" {
+  description = "Require TLS/HTTPS on the load balancer endpoint"
+  type        = bool
+  default     = false
+}

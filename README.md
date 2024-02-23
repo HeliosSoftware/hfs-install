@@ -101,11 +101,17 @@ There are three ways to locate the Loadbalancer URL for your cluster.
 
 Your Load balancer URL will look something like this:
 
-`https://a83a8d424b4b5456295447ba4c2139f9-350762241.us-east-1.elb.amazonaws.com` (Yours will be different)
+`http://a83a8d424b4b5456295447ba4c2139f9-350762241.us-east-1.elb.amazonaws.com` (Yours will be different)
 
 Place that URL into a browser, and append `/ui` to access the Administrative User Interface.
 
 Appending `/fhir`to the Load balancer URL is the FHIR Server's root address.
+
+### Post-Installation Instructions ###
+
+This Reference Architecture has been created with the dual goals of getting setup with (1) a robust production-grade infrastructure and (2) simplicity that does not include the complexities of TLS encryption, and other required settings that one would need to run the Helios FHIR Server in a production environment.
+
+To complete your Helios FHIR Server setup for a production implementation, please follow the instructions in [Post Implementation Steps](https://docs.heliossoftware.com/#post-installation-steps).
 
 ### Cleanup ###
 To remove all created AWS resources, run the following command on your local machine in the `terraform` folder:
