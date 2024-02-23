@@ -109,7 +109,7 @@ Appending `/fhir`to the Load balancer URL is the FHIR Server's root address.
 
 ### Post-Installation Instructions ###
 
-This Reference Architecture has been created with the dual goals of getting setup with (1) a robust production-grade infrastructure and (2) simplicity that does not include the complexities of TLS encryption, and other required settings that one would need to run the Helios FHIR Server in a production environment.
+This Reference Architecture has been created with the dual goals of getting setup with (1) a robust production-grade infrastructure and (2) simplicity that does not initially include the complexities of TLS encryption, and other required settings that one would need to run the Helios FHIR Server in a production environment.
 
 To complete your Helios FHIR Server setup for a production implementation, please follow the instructions in [Post Implementation Steps](https://docs.heliossoftware.com/#post-installation-steps).
 
