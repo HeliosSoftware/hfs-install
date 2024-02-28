@@ -118,8 +118,8 @@ resource "aws_instance" "bastion_server" {
       "chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519",
       "chown ubuntu:ubuntu /home/ubuntu/.ssh/id_ed25519.pub",
       "chmod 400 /home/ubuntu/.ssh/id_ed25519",
+      "sudo apt-get install java-common",
       "wget https://corretto.aws/downloads/latest/amazon-corretto-17-x64-linux-jdk.deb",
-      "sudo sudo apt-get install java-common",
       "sudo dpkg --install java-17-amazon-corretto-jdk_17.0.0.35-1_amd64.deb"
     ]
     connection {
