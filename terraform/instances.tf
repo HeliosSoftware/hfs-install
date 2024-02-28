@@ -43,6 +43,16 @@ resource "aws_instance" "bastion_server" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.helios_local_key_pair.key_name
   ebs_optimized               = true
+  root_block_device {
+    delete_on_termination = true
+    encrypted = true
+    volume_size = 20
+    volume_type = "gp3"
+  }
+  ephemeral_block_device {
+    device_name = "/dev/sdc"
+    virtual_name = "ephemeral0"
+  }
   depends_on                  = [aws_instance.cassandra_0, aws_instance.cassandra_1, aws_instance.cassandra_2]
 //  user_data = <<EOF
 //#!/bin/bash
