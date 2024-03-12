@@ -1,26 +1,4 @@
 resource "aws_cloudwatch_dashboard" "helios-fhir-server" {
-  dashboard_name = "Helios FHIR Server"
-
-  dashboard_body = jsonencode({
-    widgets = [
-      {
-        type   = "metric"
-        x      = 0
-        y      = 0
-        width  = 12
-        height = 6
-        properties = {
-          metrics = [
-            [ "SELECT AVG(CPUUtilization)\nFROM SCHEMA(\"AWS/EC2\", InstanceId)\nGROUP BY InstanceId\nORDER BY AVG() DESC", "${LABEL} [avg: ${AVG}%]", "q1", "us-east-1" ]
-          ]
-          view   = "timeSeries"
-          stacked = false
-          period = 300
-          stat   = "Average"
-          region = "us-east-1"
-          title = "CPU utilization of EC2 instances sorted by highest"
-        }
-      }
-    ]
-  })
+  dashboard_name = "Helios-FHIR-Server"
+  dashboard_body = "{\"widgets\":[{\"height\":6,\"width\":6,\"y\":0,\"x\":1,\"type\":\"metric\",\"properties\":{\"metrics\":[[{\"expression\":\"SELECT AVG(CPUUtilization)\\nFROM SCHEMA(\\\"AWS/EC2\\\", InstanceId)\\nGROUP BY InstanceId\\nORDER BY AVG() DESC\",\"label\":\"$${LABEL} [avg: $${AVG}%]\",\"id\":\"q1\",\"period\":60 }]],\"view\":\"timeSeries\",\"stacked\":false,\"region\":\"us-east-1\",\"stat\":\"Average\",\"period\":60,\"title\":\"CPU utilization of EC2 instances sorted by highest\",\"start\":\"-PT1H\",\"end\":\"P0D\",\"yAxis\":{\"left\":{\"label\":\"Percent\",\"showUnits\":false } } } }] }"
 }
