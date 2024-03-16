@@ -31,6 +31,7 @@ resource "aws_eks_node_group" "worker-nodes" {
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
     aws_eks_cluster.helios-eks-cluster
   ]
+  // This doesn't work - and likely won't in the future:  https://github.com/hashicorp/terraform-provider-aws/issues/16825
   tags = {
     Name = "Helios FHIR Server"
   }
