@@ -71,7 +71,7 @@ resource "aws_instance" "bastion_server" {
       "echo 'export PATH=/home/ubuntu/bin:$PATH' >> /home/ubuntu/.bashrc",
       "echo 'source /home/ubuntu/hfs-install/.aws/config' >> /home/ubuntu/.bashrc",
       "echo 'aws eks update-kubeconfig --region ${var.AWS_DEFAULT_REGION} --name ${aws_eks_cluster.helios-eks-cluster.name}' >> /home/ubuntu/.bashrc",
-      "kubectl annotate service kubernetes service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout=1200",
+      "aws elb modify-load-balancer-attributes --load-balancer-name ${data.aws_elb.aws-hfs-lb.name} --load-balancer-attributes \"{\"ConnectionSettings\":{\"IdleTimeout\":1200}}\"",
       "git clone https://github.com/HeliosSoftware/hfs-install.git /home/ubuntu/hfs-install",
       "mkdir /home/ubuntu/hfs-install/.aws",
       "chown -R ubuntu:ubuntu /home/ubuntu/hfs-install",
