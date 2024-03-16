@@ -94,7 +94,8 @@ SSH to the Bastion Linux instance.
 Then, follow the instructions in this [StackOverflow page](https://stackoverflow.com/questions/70787520/your-current-user-or-role-does-not-have-access-to-kubernetes-objects-on-this-eks) to remedy.
 
 ### Login To Your Helios FHIR Server Instance! ###
-There are three ways to locate the Loadbalancer URL for your cluster.
+There are four ways to locate the Loadbalancer URL for your cluster.
+- It is listed in the output of your `terraform apply` command.  Look for `load_balancer_hostname`
 - In the AWS Console, navigate to EKS > Clusters > helios-eks-cluster, then select Resources, then Service and networking, then Services.  Select helios-fhir-server.
 - In the AWS Console, navigate to EC2 > Load balancers, and selected the load balancer.
 - On the Bastion Linux instance, execute `kubectl get service -n helios-fhir-server`

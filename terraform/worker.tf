@@ -35,4 +35,7 @@ resource "aws_eks_node_group" "worker-nodes" {
   tags = {
     Name = "Helios FHIR Server"
   }
+  timeouts {
+    delete = "30m"
+  }
 }

@@ -59,6 +59,9 @@ resource "kubernetes_namespace" "helios-fhir-server" {
   metadata {
     name = "helios-fhir-server"
   }
+  timeouts {
+    delete = "30m"
+  }
 }
 
 resource "kubernetes_deployment" "helios-fhir-server" {
@@ -133,6 +136,9 @@ resource "kubernetes_deployment" "helios-fhir-server" {
     }
   }
   wait_for_rollout = false
+  timeouts {
+    delete = "30m"
+  }
 }
 
 resource "kubernetes_service" "helios-fhir-server" {
@@ -163,14 +169,14 @@ data "aws_elb" "aws-hfs-lb" {
   name = local.lb_name
 }
 
-output "load_balancer_name" {
-  value = local.lb_name
-}
+//output "load_balancer_name" {
+//  value = local.lb_name
+//}
+//
+//output "load_balancer_info" {
+//  value = data.aws_elb.aws-hfs-lb
+//}
 
 output "load_balancer_hostname" {
   value = kubernetes_service.helios-fhir-server.status.0.load_balancer.0.ingress.0.hostname
-}
-
-output "load_balancer_info" {
-  value = data.aws_elb.aws-hfs-lb
 }
