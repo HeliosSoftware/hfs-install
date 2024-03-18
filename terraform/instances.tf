@@ -99,7 +99,9 @@ resource "aws_instance" "bastion_server" {
   }
   provisioner "remote-exec" {
     inline = [
-      "bash -c 'aws elb modify-load-balancer-attributes --load-balancer-name ${data.aws_elb.aws-hfs-lb.name} --load-balancer-attributes \"{\\\"ConnectionSettings\\\":{\\\"IdleTimeout\\\":1200}}\"'",
+      "echo 'source hfs-install/.aws/config' >> awselb.sh",
+      "echo 'aws elb modify-load-balancer-attributes --load-balancer-name ${data.aws_elb.aws-hfs-lb.name} --load-balancer-attributes \"{\\\"ConnectionSettings\\\":{\\\"IdleTimeout\\\":1200}}\"' >> awselb.sh",
+      "bash awselb.sh",
       "cd hfs-install",
       "cd ansible",
       "bash apache-cassandra-axonops.sh",
