@@ -338,10 +338,10 @@ resource "aws_instance" "cassandra_2" {
 //  }
 //}
 
-# Bastion Gateway Server
+# Test Import Server
 resource "aws_instance" "test_import_server1" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.small"
+  instance_type = "t3.medium"
   tags = {
     Name        = "Test Import Server 1"
     Role        = "gateway"
