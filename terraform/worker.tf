@@ -8,13 +8,13 @@ resource "aws_eks_node_group" "worker-nodes" {
   ]
   capacity_type  = "ON_DEMAND"
   instance_types = [var.worker_instance_type]
-  disk_size      = "60"
+  disk_size      = "120"
   remote_access {
-    ec2_ssh_key = aws_key_pair.helios_generated_key_pair.key_name
+    ec2_ssh_key               = aws_key_pair.helios_generated_key_pair.key_name
     source_security_group_ids = [aws_security_group.allow_outbound_all.id, aws_security_group.allow_tls.id]
   }
   scaling_config {
-    desired_size = 2
+    desired_size = 4 
     max_size     = 5
     min_size     = 2
   }
@@ -23,7 +23,7 @@ resource "aws_eks_node_group" "worker-nodes" {
   }
   labels = {
     role = "Helios-FHIR-Server"
-    env = var.ENVIRONMENT
+    env  = var.ENVIRONMENT
   }
   depends_on = [
     aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
@@ -39,11 +39,11 @@ resource "aws_eks_node_group" "worker-nodes" {
     delete = "30m"
   }
 }
-resource "aws_autoscaling_policy" "helios-scaling"  {
-  name                   = "cpu-utilization-scaling-policy"
-  policy_type            = "TargetTrackingScaling"
+resource "aws_autoscaling_policy" "helios-scaling" {
+  name                      = "cpu-utilization-scaling-policy"
+  policy_type               = "TargetTrackingScaling"
   estimated_instance_warmup = 300
-  autoscaling_group_name = aws_eks_node_group.worker-nodes.resources[0].autoscaling_groups[0].name
+  autoscaling_group_name    = aws_eks_node_group.worker-nodes.resources[0].autoscaling_groups[0].name
 
   target_tracking_configuration {
     predefined_metric_specification {
