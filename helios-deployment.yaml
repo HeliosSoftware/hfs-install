@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: helios-fhir-deployment
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
       type: RollingUpdate
       rollingUpdate:
@@ -81,4 +81,3 @@ metadata:
 data:
   CASSANDRA_PROPERTIES_CONTACTPOINTS: "cassandra"
   DATABASE_URL: "my-db-url"
-
