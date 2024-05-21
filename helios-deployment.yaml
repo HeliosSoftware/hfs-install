@@ -7,8 +7,8 @@ spec:
   strategy:
       type: RollingUpdate
       rollingUpdate:
-        maxUnavailable: 1    # Number of pods that can be unavailable during updates
-        maxSurge: 1         # Number of new pods that can be created above the desired number of pods
+        maxUnavailable: 0    # Number of pods that can be unavailable during updates
+        maxSurge: 2         # Number of new pods that can be created above the desired number of pods
   selector:
     matchLabels:
      app: helios-fhir
