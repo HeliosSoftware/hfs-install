@@ -49,7 +49,7 @@ resource "aws_autoscaling_policy" "helios-scaling"  {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-    target_value = 75.0
+    target_value = 50.0
   }
 }
 resource "aws_iam_policy" "cw_metrics_policy" {

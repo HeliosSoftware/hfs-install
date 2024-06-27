@@ -159,6 +159,77 @@ resource "kubernetes_service" "helios-fhir-server" {
   }
 }
 
+resource "aws_launch_configuration" "helios-launch-config" {
+  name          = "helios-launch-config"
+  image_id      = data.aws_ami.ubuntu.id
+  instance_type = var.worker_instance_type
+}
+
+
+resource "aws_autoscaling_group" "helios-autoscaling-group" {
+  name                      = "helios-autoscaling-group"
+  max_size                  = 5
+  min_size                  = 2
+  health_check_grace_period = 300
+  health_check_type         = "EC2"
+  desired_capacity          = 2
+  force_delete              = true
+  launch_configuration      = aws_launch_configuration.helios-launch-config.id
+  vpc_zone_identifier       = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
+
+  instance_maintenance_policy {
+    min_healthy_percentage = 90
+    max_healthy_percentage = 120
+  }
+
+  initial_lifecycle_hook {
+    name                 = "helios-lifecycle-hook"
+    default_result       = "CONTINUE"
+    heartbeat_timeout    = 2000
+    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "helios-autoscaling-group"
+    propagate_at_launch = true
+  }
+
+  wait_for_capacity_timeout = "10m"
+
+  timeouts {
+    delete = "30m"
+  }
+
+}
+
+resource "kubernetes_horizontal_pod_autoscaler" "helios-hpa" {
+  metadata {
+    name      = "helios-hpa"
+    namespace = kubernetes_namespace.helios-fhir-server.id
+  }
+  spec {
+    scale_target_ref {
+      kind       = "Deployment"
+      name       = kubernetes_deployment.helios-fhir-server.metadata.0.name
+      api_version = "apps/v1"
+    }
+    min_replicas = 1
+    max_replicas = 5
+    metric {
+      type = "Resource"
+      resource {
+        name  = "cpu"
+        target {
+          type     = "Utilization"
+          average_utilization = 50
+        }
+      }
+    }
+  }
+}
+
+
 # Create a local variable for the load balancer name.
 locals {
   lb_name = split("-", split(".", kubernetes_service.helios-fhir-server.status.0.load_balancer.0.ingress.0.hostname).0).0
@@ -180,3 +251,5 @@ data "aws_elb" "aws-hfs-lb" {
 output "load_balancer_hostname" {
   value = kubernetes_service.helios-fhir-server.status.0.load_balancer.0.ingress.0.hostname
 }
+
+

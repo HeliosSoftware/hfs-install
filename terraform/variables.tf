@@ -62,7 +62,7 @@ variable "private_subnet_2_cidr" {
 
 # Instance type
 variable "worker_instance_type" {
-  default     = "t3.xlarge"
+  default     = "m6i.xlarge"
   type        = string
   description = "Worker node instance type"
 }
